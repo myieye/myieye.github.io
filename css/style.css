@@ -150,6 +150,7 @@ hr {
 	background: -webkit-linear-gradient(top, #000 0%, #000B 100%); /* Chrome10-25,Safari5.1-6 */
 	background: linear-gradient(to bottom, #000 0%, #000B 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#801b71d6', endColorstr='#80c54daa', GradientType=0 ); /* IE6-9 */
+	position: relative;
 }
 .intro h1 {
 	color: rgba(255,255,255,0.9);
@@ -656,19 +657,21 @@ h1.name {
 	word-break: break-word;
 }
 
-.get-in-touch-button:hover {
+.get-in-touch-button-hover {
 	opacity: 1;
-	color: #EEE;
+	color: #EEE !important;
 	font-size: 6pt;
-	padding-top: 10px;
+	padding-top: 10px !important;
 }
 
 @media (max-width: 450px) {
 	.get-in-touch-button {
 		width: 130px;
 	}
+}
 
-	.get-in-touch-button:hover {
+@media (max-width: 450px) {
+	.get-in-touch-button-hover {
 		padding: 5px;
 	}
 }

@@ -102,11 +102,13 @@ function main() {
         $("#btn-get-in-touch").on("mouseover",  function () {
             this.href = this.href.replace(/x/g,'')
             this.innerHTML = this.href.substring (7);
+            $(this).addClass ("get-in-touch-button-hover");
         });
         
         $("#btn-get-in-touch").on("mouseleave",  function () {
             this.href=this.href.replace(/x/g,'')
             this.innerHTML = msgButtonText;
+            $(this).removeClass ("get-in-touch-button-hover");
         });
  
 
