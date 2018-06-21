@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/lib/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/lib/bootstrap-slider.min.css">
+    <script src="./js/lib/two.min-dev.js"></script>
+
+  </head>
+  <body style="">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-3">
+          <span style="font-size:30px;width:80%"
+            class="label label-primary">Boustrophedon Decomposition
+          </span>
+          <div class="panel panel-success" style="margin:30px;padding:10px">
+            <button type="button"
+                  id="btnStartStop"
+                  class="btn btn-success btn-lg btn-block"
+                  onclick="startStop()">
+              Start
+            </button>
+            <button type="button"
+                id="btnReset"
+                class="btn btn-danger btn-lg btn-block"
+                onclick="reset()">
+              Reset
+            </button>
+            <!-- Single button -->
+            <div class="btn-group btn-group-justified" style="margin-top:5px" role="group" aria-label="...">
+              <div class="btn-group" role="group">
+                  <button type="button" class="btn btn-info btn-lg dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Environments <span style="margin-left:40px" class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li><a href="#" onclick="setEnvironment(0)">Environment 1</a></li>
+                    <li><a href="#" onclick="setEnvironment(1)">Environment 2</a></li>
+                    <li><a href="#" onclick="setEnvironment(2)">Environment 3</a></li>
+                  </ul>
+                </div>
+            </div>
+            <div style="margin-top:10px">
+            <div style="width:40%;display:inline-block">
+              <span style="font-size:18px;margin-right:10px" class="label label-primary">Speed:</span>
+            </div>  
+            <input id="slider" style="width:55%;float:right" type="text"/><br/>
+            </div>
+        </div>
+        </div>
+        <div class="col-md-9">
+          <div id="simulation"></div>
+        </div>
+      </div>
+    </div>
+  	
+
+    <script src="./js/lib/jquery-2.2.0.min.js"></script>
+    <script src="./js/lib/bootstrap.min.js"></script>
+    <script src="./js/lib/bootstrap-slider.min.js"></script>
+  	<script src="./js/gui.js"></script>
+  	<script src="./js/init.js"></script>
+  	<script src="./js/environments.js"></script>
+    <script src="./js/renderer.js"></script>
+    <script src="./js/animate.js"></script>
+    <script src="./js/events.js"></script>
+  	<script src="./js/simulator.js"></script>
+
+  </body>
+</html>
