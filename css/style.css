@@ -672,6 +672,6 @@ h1.name {
 
 @media (max-width: 450px) {
 	.get-in-touch-button-hover {
-		padding: 5px;
+		padding: 5px 0px;
 	}
 }
