@@ -5,7 +5,7 @@ body, html {
 	color: #666;
 	font-weight: 300;
 	width: 100% !important;
-	height: 100% !important;
+	min-height: 100vh !important;
 }
 h2 {
 	margin: 0 0 20px 0;
@@ -165,6 +165,11 @@ hr {
 	font-weight: 300;
 	margin-bottom: 40px;
 	margin-top: 20px;
+	line-height: 1.5;
+}
+.intro p span {
+	font-size: 24px;
+  font-weight: 500;
 }
 .intro span {
 	color: rgba(255,255,255,0.5);
@@ -172,7 +177,7 @@ hr {
 	font-weight: 300;
 }
 header .intro-text {
-	padding-top: 125px;
+	padding-top: 20vh;
 	padding-bottom: 0;
 	padding-left: 10%;
    	padding-right: 10%;
@@ -585,7 +590,7 @@ h1.name {
 }
 
 .fullscreen {
-	height: 100%;
+	min-height: 100vh;
 }
 
 @media (max-width: 550px) {
