@@ -72,7 +72,7 @@ hr {
 }
 /* Navigation */
 #menu {
-	padding: 20px;
+	padding: 20px 0;
 	transition: all 0.8s;
 }
 #menu.navbar-default {
@@ -84,9 +84,10 @@ hr {
 	color: rgba(255,255,255,0.8);
 	font-weight: 500;
 	text-transform: uppercase;
+	opacity: 0.6;
 }
 #menu a.navbar-brand:hover {
-	color: rgba(15, 207, 8, 0.5);
+	opacity: 1;
 }
 #menu.navbar-default .navbar-nav > li > a {
 	text-transform: uppercase;
@@ -610,11 +611,19 @@ h1.name {
 
 .navbar-header {
 	height: 50px;
+	width: 100%;
 }
 
 .git-hub-badge {
     height: 90%;
-    padding-top: 6px;
+	padding-top: 6px;
+	opacity: 0.6;
+	margin-left: 5px;
+	float:right;
+}
+
+.git-hub-badge:hover {
+	opacity: 1;
 }
 
 .green {
@@ -627,4 +636,26 @@ h1.name {
 
 .orange {
 	color: rgb(250,150,50) !important;
+}
+
+.get-in-touch-button {
+	float: right;
+  	border: 3px solid #EEE;
+	color: #EEE;
+	font-weight: 400;
+	padding: 5px 20px;
+	height: 75%;
+	opacity: 0.6;
+	margin: 6px 0.5%;
+	text-transform: uppercase;
+	border-radius: 50px;
+	width: 160px;
+   	text-align: center;
+}
+
+.get-in-touch-button:hover {
+	opacity: 1;
+	color: #EEE;
+	font-size: 6pt;
+	padding-top: 10px;
 }

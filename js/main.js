@@ -96,6 +96,17 @@ function main() {
             effect: 'slideDown',  
             keyboardNav: true,                            
         });
+
+
+        $("#btn-get-in-touch").on("mouseover",  function () {
+            this.href=this.href.replace(/x/g,'')
+            this.innerHTML = this.href.substring (7);
+        });
+        
+        $("#btn-get-in-touch").on("mouseleave",  function () {
+            this.href=this.href.replace(/x/g,'')
+            this.innerHTML = "Get In Touch";
+        });
  
 
 }());
