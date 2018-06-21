@@ -97,15 +97,16 @@ function main() {
             keyboardNav: true,                            
         });
 
+        var msgButtonText = $("#btn-get-in-touch").text ();
 
         $("#btn-get-in-touch").on("mouseover",  function () {
-            this.href=this.href.replace(/x/g,'')
+            this.href = this.href.replace(/x/g,'')
             this.innerHTML = this.href.substring (7);
         });
         
         $("#btn-get-in-touch").on("mouseleave",  function () {
             this.href=this.href.replace(/x/g,'')
-            this.innerHTML = "Get In Touch";
+            this.innerHTML = msgButtonText;
         });
  
 

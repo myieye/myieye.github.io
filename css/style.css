@@ -638,7 +638,7 @@ h1.name {
 	color: rgb(250,150,50) !important;
 }
 
-.get-in-touch-button {
+.get-in-touch-button, .get-in-touch-button:focus {
 	float: right;
   	border: 3px solid #EEE;
 	color: #EEE;
@@ -650,7 +650,10 @@ h1.name {
 	text-transform: uppercase;
 	border-radius: 50px;
 	width: 160px;
-   	text-align: center;
+	max-width: 35%;
+	min-width: 120px;
+	text-align: center;
+	word-break: break-word;
 }
 
 .get-in-touch-button:hover {
@@ -658,4 +661,14 @@ h1.name {
 	color: #EEE;
 	font-size: 6pt;
 	padding-top: 10px;
+}
+
+@media (max-width: 450px) {
+	.get-in-touch-button {
+		width: 130px;
+	}
+
+	.get-in-touch-button:hover {
+		padding: 5px;
+	}
 }
