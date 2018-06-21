@@ -20,7 +20,7 @@
 
         function initGame(game, platformGroup) {
 
-            currPlatformY = settings.platformY;
+            currPlatformY = game.world.height - settings.platformY;
             currPlatformX = settings.platformStartX;
 
             platformGroup.enableBody = true;
@@ -63,7 +63,7 @@
         }
 
         function onPlatformMissed () {
-            settings.currPlatformY += 15;
+            currPlatformY += 15;
         }
 
         return {

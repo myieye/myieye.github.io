@@ -10,7 +10,7 @@
             {}, {}, {}, {}
         ],
         platformStartX: 50,
-        platformY: 50,
+        platformY: 250,
         platformWidth: 100,
         platformLoadBuffer: 1000,
         defaultTint: 0x333333,
