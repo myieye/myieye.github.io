@@ -5,23 +5,27 @@
     var currPlatformX;
     var currPlatformY;
 
+    var that;
+
     ColorRunner.GameLogic = function(gameSettings) {
         settings = gameSettings;
         this.colors = settings.defaultColors;
+        that = this;
     };
 
     ColorRunner.GameLogic.prototype = (function() {
 
         function setupWorld (game) {
-            game.world.resize(settings.startWorldSize.x, settings.startWorldSize.y);
+            game.world.resize(ColorRunner.screenSize.x(), ColorRunner.screenSize.y());
             game.physics.startSystem(Phaser.Physics.ARCADE);
             game.physics.arcade.gravity.y = 200;
         }
 
         function initGame(game, platformGroup) {
-
-            currPlatformY = game.world.height - settings.platformY;
-            currPlatformX = settings.platformStartX;
+            that.lastPlatform = undefined;
+            that.platformNum = 1;
+            that.game = game;
+            currPlatformY = game.world.height - settings.platformStartY;
 
             platformGroup.enableBody = true;
             platformGroup.physicsBodyType = Phaser.Physics.ARCADE;
@@ -34,19 +38,20 @@
         }
 
         function _addPlatform(platformGroup, p) {
+            var newPlatformX = that.lastPlatform
+                ? that.lastPlatform.x + settings.platformWidth
+                : settings.platformStartX;
             var platform = platformGroup.create(
-                    currPlatformX, currPlatformY, 'platform'); 
+                newPlatformX, currPlatformY, 'platform');
             platform.body.allowGravity = false;
             platform.body.immovable = true;
             platform.tint = (p.t || settings.defaultTint);
-
-            currPlatformX += settings.platformWidth;
+            platform.number = that.platformNum++;
+            that.lastPlatform = platform;
         }
 
         function update(game, platformGroup) {
-            var playerX = game.player.x;
-            
-            while (playerX > (currPlatformX - settings.platformLoadBuffer)) {
+            if (that.lastPlatform && (that.lastPlatform.worldPosition.x < settings.platformLoadBuffer)) {
                 var tint = _getRandomTint.call(this);
                 var newP = { t: tint };
                 _addPlatform(platformGroup, newP);
@@ -62,8 +67,9 @@
             return this.colors[i];
         }
 
-        function onPlatformMissed () {
-            currPlatformY += 15;
+        function onPlatformMissed (platformGroup) {
+            platformGroup.y += ColorRunner.settings.platformHeight;
+            platformGroup.x += ColorRunner.settings.platformWidth / 4;
         }
 
         return {

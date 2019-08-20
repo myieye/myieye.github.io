@@ -146,10 +146,11 @@ hr {
 }
 .intro .overlay {
 	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#1b71d6+0,c54daa+100&0.5+0,0.5+100 */
-	background: -moz-linear-gradient(top, #000 0%, #000B 100%); /* FF3.6-15 */
-	background: -webkit-linear-gradient(top, #000 0%, #000B 100%); /* Chrome10-25,Safari5.1-6 */
-	background: linear-gradient(to bottom, #000 0%, #000B 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#801b71d6', endColorstr='#80c54daa', GradientType=0 ); /* IE6-9 */
+	background: -moz-linear-gradient(top, #000 0%, rgba(0,0,0,0.7) 100%); /* FF3.6-15 #000B */
+	background: -webkit-linear-gradient(top, #000 0%, rgba(0,0,0,0.7) 100%); /* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(to bottom, #000 0%, rgba(0,0,0,0.7) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	/*filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#801b71d6', endColorstr='#80c54daa', GradientType=0 ); IE6-9 */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='rgba(128, 27, 113, 0.84)', endColorstr='rgba(128, 197, 77, 0.67)', GradientType=0 ); /* IE6-9 */
 	position: relative;
 }
 .intro h1 {

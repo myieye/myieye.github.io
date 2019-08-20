@@ -3,7 +3,7 @@
 
         var mathHelper;
 
-        var ColorJoystick = function (game, x, y, radius, pinRadius, colors, observer) {
+        var ColorJoystick = function (game, x, y, radius, pinRadius, colors, onColorChanged) {
             Phaser.Sprite.call(this, game, x, y);
 
             // Init Dependencies
@@ -13,12 +13,7 @@
             var pos = this.pos = {x: x, y: y};
             this.radius = radius;
 
-            // Setup observers
-            this.observers = [];
-            if (observer)
-                this.observers.push(observer);
-            
-
+            this.onColorChanged = onColorChanged;
             this.currColor = colors[0];
             this.colors = [];
 
@@ -118,7 +113,7 @@
         if (selectedColor !== this.currColor) {
             this.currColor = selectedColor;
             this.border.tint = this.currColor;
-            this.notifyObservers();
+            this.onColorChanged(this.currColor);
         }
     }
 
@@ -170,19 +165,6 @@
             if (angle > this.colors[i].angle) {
                 return this.colors[i].color;
             }
-        }
-    }
-
-
-    // OBSERVER PATTERN ---------------------------------------------
-
-    ColorJoystick.prototype.subscribe = function(observer) {
-        this.observers.push(observer);
-    }
-
-    ColorJoystick.prototype.notifyObservers = function() {
-        for (var i = 0; i < this.observers.length; i++) {
-            this.observers[i].notifyColorChanged(this.currColor);
         }
     }
 

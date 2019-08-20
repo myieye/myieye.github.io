@@ -7,8 +7,10 @@ ColorRunner.Preloader.prototype = {
 		this.load.image('platform', 'img/platform.gif');
     	this.load.image('game-bg', 'img/backgrounds/background.jpg');
 		this.load.image('joystick', 'img/joystick.png');
+		ColorRunner.soundHelper.preload(this.game);
 	},
 	create: function() {
 		this.game.state.start('Game', true, false, this.gameLogic);
+		ColorRunner.soundHelper.create(this.game);
 	}
 };

@@ -17,7 +17,7 @@
         }
     </style>
     <!--script src="cordova.js"></script-->
-    <script src="src/libs/phaser.min.js"></script>
+    <script src="src/libs/phaser-2.13.1.min.js"></script>
 
     <script src="src/states/boot.js"></script>
     <script src="src/states/preloader.js"></script>
@@ -25,8 +25,11 @@
 
     <script src="src/helpers/settings.js"></script>
     <script src="src/helpers/math-helper.js"></script>
+    <script src="src/helpers/sound-helper.js"></script>
 
     <script src="src/sprites/color-joystick.js"></script>
+    <script src="src/sprites/player.js"></script>
+    <script src="src/sprites/score.js"></script>
 
     <script src="src/game-logic.js"></script>
 </head>
@@ -39,12 +42,13 @@
             }, 5000, false);
         });
 
+        var game;
         (function () {
-            var game = new Phaser.Game(ColorRunner.screenSize.x, ColorRunner.screenSize.y, Phaser.CANVAS, 'game');
-            game.state.add('Boot', ColorRunner.Boot);
-            game.state.add('Preloader', ColorRunner.Preloader);
-            game.state.add('Game', ColorRunner.Game);
-            game.state.start('Boot');
+            game = new Phaser.Game(ColorRunner.screenSize.x(), ColorRunner.screenSize.y(), Phaser.CANVAS, 'game');
+            game.state.add(ColorRunner.const.state.boot, ColorRunner.Boot);
+            game.state.add(ColorRunner.const.state.preloader, ColorRunner.Preloader);
+            game.state.add(ColorRunner.const.state.game, ColorRunner.Game);
+            game.state.start(ColorRunner.const.state.boot);
         })();
     </script>
 </body>

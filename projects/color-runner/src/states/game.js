@@ -1,6 +1,7 @@
 ColorRunner.Game = function (game) { };
 ColorRunner.Game.prototype = {
 	init: function (gameLogic) {
+		game = this;
 		this.gameLogic = gameLogic;
 
 		this.bg = this.add.sprite(0, -100, 'game-bg');
@@ -10,112 +11,100 @@ ColorRunner.Game.prototype = {
 
 	create: function () {
 		// SETUP WORLD ------------------------------------------------
-
-		this.world.resize(ColorRunner.settings.startWorldSize.x, ColorRunner.settings.startWorldSize.y);
+		this.world.resize(ColorRunner.screenSize.x(), ColorRunner.screenSize.y());
 		this.physics.startSystem(Phaser.Physics.ARCADE);
-		this.physics.arcade.gravity.y = 200;
+		this.physics.arcade.gravity.y = 1000;
 
 		var colorWheelPadding = 30;
-		var colorWheelRadius = 40;
-		var colorWheelPinRadius = 20;
+		var colorWheelRadius = 70;
+		var colorWheelPinRadius = 35;
 		var colorWheelPos = {
-			x: (this.camera.x + this.camera.width) - (colorWheelRadius + colorWheelPadding),
+			//x: (this.camera.x + this.camera.width) - (colorWheelRadius + colorWheelPadding),
+			x: this.camera.x + ColorRunner.settings.platformLoadBuffer + 100,
 			y: (this.camera.y + this.camera.height) - (colorWheelRadius + colorWheelPadding)
 		}
+		this.game.obj = this.game.add.group(undefined, "objects");
+		this.game.ui = this.game.add.group(undefined, "controls");
+
+		// Color-Joystick
 		var colorWheelColors = this.gameLogic.getColorWheelHexColors();
+		var colorJoystick = new ColorRunner.sprites.ColorJoystick(this.game, colorWheelPos.x, colorWheelPos.y,
+			colorWheelRadius, colorWheelPinRadius, colorWheelColors, (color) => this.onColorChanged(color));
+		this.game.ui.add(this.game.add.existing(colorJoystick));
 
-		var colorJoystick = new ColorRunner.sprites.ColorJoystick(this, colorWheelPos.x, colorWheelPos.y,
-			colorWheelRadius, colorWheelPinRadius, colorWheelColors, this);
+		// Score-board
+		this.score = this.game.ui.add(this.game.add.existing(new ColorRunner.sprites.ScoreBoard(this.game)));
 
-		this.game.add.existing(colorJoystick);
-
-		// PREPARE PLAYER
-		this.player = this.add.sprite(100, 50, 'player', 'default/000');
-
-		// physics
-		this.physics.enable(this.player, Phaser.Physics.ARCADE);
-
-		// size & position
-		this.player.scale.setTo(0.4, 0.4);
-		this.player.body.setSize(120, 160);
-		this.player.anchor.set(0.5, 1);
-
-		// animate
-		this.player.animations.add('walk', Phaser.Animation.generateFrameNames('default/', 0, 8, '', 3), 20, true, false);
-
-		// color
-		this.player.tint = 0xFFFFFF;
-
-		//this.player.checkWorldBounds = true;
-		//this.player.events.onOutOfBounds.add(this.restart, this);
+		// Player
+		var player = new ColorRunner.sprites.Player(this.game, ColorRunner.settings.platformStartX + 15, 50);
+		this.player = this.game.obj.add(this.game.add.existing(player));
 
 		// CAMERA
 		this.camera.follow(this.player, Phaser.Camera.FOLLOW_LOCKON);
 
-
 		// PLATFORMS
-		this.platformGroup = this.add.group();
-		this.gameLogic.initGame(this, this.platformGroup);
+		this.platformGroup = this.game.obj.add(this.add.group());
+		this.gameLogic.initGame(this.game, this.platformGroup);
 
 		this.keys = this.game.input.keyboard.createCursorKeys();
 
 		this.game.time.events.add(Phaser.Timer.SECOND, function () {
-			this.player.animations.play('walk');
-			this.player.body.velocity.x += ColorRunner.settings.startSpeed;
+			this.player.walk();
 			this.started = true;
 		}, this);
+
+		this.game.currSpeed = ColorRunner.settings.startSpeed;
 	},
 	update: function () {
-
+		
 		this.gameLogic.update(this, this.platformGroup);
-
 		if (this.started) {
-			this.updateSpeed ();
 			this.checkBounds ();
 		}
 
-		this.lerpPlayerColor();
+		if (this.started) {
+			this.platformGroup.x -= this.game.currSpeed;
+		}
+
 		this.physics.arcade.collide(this.player, this.platformGroup, this.platformCollision, null, this);
 	},
+	
 	platformCollision: function (player, platform) {
-
 		if (player.lastPlatform !== platform || !platform.matched) {
 
 			if (player.lastPlatform && !player.lastPlatform.matched) {
-				this.gameLogic.onPlatformMissed();
+				this.gameLogic.onPlatformMissed(this.platformGroup);
 				player.lastPlatform.matched = true;
+				this.onPlatformComplete(platform.number);
 			}
 
 			player.lastPlatform = platform;
 			this.checkColor(platform);
 		}
 	},
+
 	checkColor: function (platform) {
 		if (platform.tint != ColorRunner.settings.defaultTint) {
-			if (this.player.targetTint === platform.tint) {
+			if (this.player.getColor() === platform.tint) {
 				platform.matched = true;
 				platform.tint = ColorRunner.settings.defaultTint;
+				this.score.increment();
+				this.onPlatformComplete(platform.number);
 			}
 		} else {
 			platform.matched = true;
 		}
 	},
-	lerpPlayerColor: function () {
-		if (this.player.targetTint) {
-			this.player.tint = Phaser.Color.interpolateColor(
-				this.player.tint, this.player.targetTint, 100,
-				ColorRunner.settings.colorChangeSpeed, 1)
+
+	onColorChanged: function (newColor) {
+		this.player.setColor(newColor);
+	},
+
+	onPlatformComplete: function(platformNumber) {
+		if (platformNumber % ColorRunner.settings.speedIncreaseInterval == 0) {
+			this.game.currSpeed = this.game.math.clamp(this.game.currSpeed + ColorRunner.settings.speedIncrement,
+				0, ColorRunner.settings.maxSpeed);
 		}
-	},
-
-	notifyColorChanged: function (newColor) {
-		this.player.targetTint = newColor;
-	},
-
-	updateSpeed: function () {
-		this.player.body.velocity.x = this.game.math.clamp(
-			this.player.body.velocity.x + 0.5,
-			0, ColorRunner.settings.maxSpeed);
 	},
 
 	checkBounds: function () {
@@ -128,7 +117,7 @@ ColorRunner.Game.prototype = {
 
 	restart: function () {
 		this.game.state.start('Game', true, false, this.gameLogic);
-	}
+	},
 };
 
 // font example
