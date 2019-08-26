@@ -22,5 +22,8 @@
   "bugs": {
     "url": "https://github.com/myieye/color-runner/issues"
   },
-  "homepage": "https://github.com/myieye/color-runner#readme"
+  "homepage": "https://github.com/myieye/color-runner#readme",
+  "dependencies": {
+    "requirejs": "^2.3.6"
+  }
 }
