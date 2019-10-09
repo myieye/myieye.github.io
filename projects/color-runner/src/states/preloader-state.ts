@@ -1,19 +1,27 @@
 import { State } from "phaser-ce";
 import SoundHelper from "../helpers/sound-helper";
+import { Const, Image } from "../helpers/const";
 
 export default class PreloaderState extends State {
 
 	preload() {
-		// LGOIC --------------------------------------------------
-		this.load.atlasJSONHash('player', 'img/player-gray.png', 'img/player.json');
-		this.load.image('platform', 'img/platform.gif');
-		this.load.image('game-bg', 'img/backgrounds/background.jpg');
-		this.load.image('joystick', 'img/joystick.png');
-		SoundHelper.Instance.preload();
+		this.loadImages();
+		SoundHelper.Instance.init(this.game);
 	}
 
 	create() {
-		this.game.state.start('Game', true, false);
-		SoundHelper.Instance.create();
+		this.game.state.start(Const.States.Game, true, false);
+	}
+
+	private loadImages() {
+		for (var i of Object.keys(Const.Images)) {
+			var img:Image = Const.Images[i];
+
+			if (img.frameFile) {
+				this.load.atlasJSONHash(img.name, Const.Path.Image + img.file, Const.Path.Image + img.frameFile);
+			} else {
+				this.load.image(img.name, Const.Path.Image + img.file);
+			}
+		}
 	}
 }

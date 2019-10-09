@@ -11,7 +11,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "phaser-ce", "../helpers/sound-helper"], function (require, exports, phaser_ce_1, sound_helper_1) {
+define(["require", "exports", "phaser-ce", "../helpers/sound-helper", "../helpers/const"], function (require, exports, phaser_ce_1, sound_helper_1, const_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var PreloaderState = /** @class */ (function (_super) {
@@ -20,16 +20,23 @@ define(["require", "exports", "phaser-ce", "../helpers/sound-helper"], function 
             return _super !== null && _super.apply(this, arguments) || this;
         }
         PreloaderState.prototype.preload = function () {
-            // LGOIC --------------------------------------------------
-            this.load.atlasJSONHash('player', 'img/player-gray.png', 'img/player.json');
-            this.load.image('platform', 'img/platform.gif');
-            this.load.image('game-bg', 'img/backgrounds/background.jpg');
-            this.load.image('joystick', 'img/joystick.png');
-            sound_helper_1.default.Instance.preload();
+            this.loadImages();
+            sound_helper_1.default.Instance.init(this.game);
         };
         PreloaderState.prototype.create = function () {
-            this.game.state.start('Game', true, false);
-            sound_helper_1.default.Instance.create();
+            this.game.state.start(const_1.Const.States.Game, true, false);
+        };
+        PreloaderState.prototype.loadImages = function () {
+            for (var _i = 0, _a = Object.keys(const_1.Const.Images); _i < _a.length; _i++) {
+                var i = _a[_i];
+                var img = const_1.Const.Images[i];
+                if (img.frameFile) {
+                    this.load.atlasJSONHash(img.name, const_1.Const.Path.Image + img.file, const_1.Const.Path.Image + img.frameFile);
+                }
+                else {
+                    this.load.image(img.name, const_1.Const.Path.Image + img.file);
+                }
+            }
         };
         return PreloaderState;
     }(phaser_ce_1.State));

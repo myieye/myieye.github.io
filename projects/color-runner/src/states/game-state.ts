@@ -1,12 +1,11 @@
-import { Sprite, Group } from "phaser-ce";
-import GameLogic from "../game-logic";
-import ScreenUtils from '../utils/utils';
-import ScoreBoard from "../sprites/score";
+import { Sprite, Group, State, Physics, Camera, Timer, Text } from "phaser-ce";
+import GameLogic, { PhaseState } from "../game-logic";
 import Player from "../sprites/player";
 import ColorJoystick from "../sprites/color-joystick";
-import { Const } from "../helpers/settings";
+import { Const } from '../helpers/const';
+import ScoreKeeper from '../sprites/score-keeper';
 
-export default class GameState extends Phaser.State {
+export default class GameState extends State {
 	gameLogic: GameLogic;
 
 	obj: Group;
@@ -15,93 +14,129 @@ export default class GameState extends Phaser.State {
 
 	bg: Sprite;
 	player: Player;
-	score: ScoreBoard;
+	score: ScoreKeeper;
+	joystick: ColorJoystick;
+	shouter: Text;
 
-	started: boolean;
-	currSpeed: number;
+	MinWidth: number;
+	MinHeight: number;
+
+	firstUpdate = true;
+	gameStarted = false;
 
 	init() {
 		this.gameLogic = new GameLogic(this);
-		this.bg = this.add.sprite(0, -100, 'game-bg');
-		this.bg.scale.setTo(2, 2);
-		this.bg.fixedToCamera = true;
+		this.MinWidth = Const.Player.StartX + Const.Player.Size.Width +
+			this.gameLogic.loadBuffer + this.gameLogic.loadSpace + Const.Platform.Animation.LockDist;
+		this.MinHeight = Const.Score.Height + Const.Player.Size.Height + Const.Player.StartVerticalPadding * 2 +
+			Const.Platform.Size.Height * (Const.Game.Life + 1);
+
+		this.bg = this.add.sprite(0, 0, 'game-bg');
+		this.bg.anchor.setTo(.5, .5);
+		//this.game.scale.startFullScreen(false);
+		//this.bg.fixedToCamera = true;
 	}
 
 	create() {
 		// SETUP WORLD ------------------------------------------------
-		this.world.resize(ScreenUtils.width(), ScreenUtils.height());
-		this.physics.startSystem(Phaser.Physics.ARCADE);
-		this.physics.arcade.gravity.y = 1000;
+		this.physics.startSystem(Physics.ARCADE);
+		this.physics.arcade.gravity.y = 200;
 
-		var colorWheelPadding = 30;
-		var colorWheelRadius = 70;
-		var colorWheelPinRadius = 35;
-		var colorWheelPos = {
-			x: (this.camera.x + this.camera.width) - (colorWheelRadius + colorWheelPadding),
-			//x: this.camera.x + Const.platform.loadBuffer + 100,
-			y: (this.camera.y + this.camera.height) - (colorWheelRadius + colorWheelPadding)
-		}
 		this.obj = this.game.add.group(undefined, "objects");
 		this.ui = this.game.add.group(undefined, "controls");
+		this.platformGroup = this.obj.add(this.add.group());
 
 		// Color-Joystick
-		var colorWheelColors = this.gameLogic.getColorWheelHexColors();
-		var colorJoystick = new ColorJoystick(this.game, colorWheelPos.x, colorWheelPos.y,
-			colorWheelRadius, colorWheelPinRadius, colorWheelColors, (color) => this.onColorChanged(color));
-		this.ui.add(this.game.add.existing(colorJoystick));
+		var colorJoystick = new ColorJoystick(this.game, (color) => this.onColorChanged(color));
+		this.joystick = this.ui.add(this.game.add.existing(colorJoystick));
 
 		// Score-board
-		this.score = this.ui.add(this.game.add.existing(new ScoreBoard(this.game)));
+		this.score = this.ui.add(this.game.add.existing(new ScoreKeeper(this.game)));
 
 		// Player
-		var player = new Player(this, Const.Platform.StartX + 15, 50);
+		var player = new Player(this, Const.Player.StartX, -20);// -Const.Player.Size.Height * 3.5);
 		this.player = this.obj.add(this.game.add.existing(player));
 
+		// Shouter
+		var shouter = this.shouter = this.game.add.text(this.world.centerX, this.world.centerY, "",
+			{
+				font: "bold 10em Arial", fill: "#fff",
+				stroke: "#000", strokeThickness: 15,
+				boundsAlignH: "right", boundsAlignV: "middle",
+			});
+		shouter.anchor.setTo(0.5);
+
 		// CAMERA
-		this.camera.follow(this.player, Phaser.Camera.FOLLOW_LOCKON);
+		this.camera.follow(this.player, Camera.FOLLOW_LOCKON);
 
 		// PLATFORMS
-		this.platformGroup = this.obj.add(this.add.group());
+		this.platformGroup.x = Const.Platform.StartX;
+		this.platformGroup.y = this.game.height - Const.Platform.NegativeStartY;
 		this.platformGroup.enableBody = true;
-		this.platformGroup.physicsBodyType = Phaser.Physics.ARCADE;
+		this.platformGroup.physicsBodyType = Physics.ARCADE;
+
 		this.gameLogic.initGame();
+		this.resize(); // This is necessary when restarting the state
 
-		this.game.time.events.add(Phaser.Timer.SECOND, () => {
-			this.player.walk();
-			this.started = true;
-		}, this);
-
-		this.currSpeed = Const.Speed.Start;
+		this.player.flyDown();
 	}
 
 	update() {
-		if (this.started) {
-			this.checkBounds();
+		if (this.firstUpdate) {
+			this.resize();
+			this.firstUpdate = false;
+		} else if (!this.gameStarted && this.player.speed > 0) {
+			this.gameStarted = true;
+			this.game.time.events.add(Timer.SECOND, () => this.gameLogic.startGame());
 		}
 
-		this.gameLogic.update(this.game, this.platformGroup);
+		this.gameLogic.update();
 	}
 
-	onColorChanged(newColor) {
+	onColorChanged(newColor: number) {
 		this.player.setColor(newColor);
 	}
 
-	checkBounds() {
-		var playerBottom = this.player.position.y;
-		var worldBottom = this.game.world.height;
-		if (playerBottom > worldBottom) {
-			this.restart();
-		}
-	}
-
 	restart() {
+		this.gameStarted = false;
 		this.game.state.start('Game', true, false, this.gameLogic);
 	}
 
 	render() {
+		//this.game.debug.pixel(this.player.getBounds().right, 70, "#FF0000", 10);
+		//this.game.debug.pixel(this.player.getBounds().right + this.gameLogic.loadBuffer, 70, "#00FF00", 10);
+		//this.game.debug.pixel(this.platformGroup.toGlobal(this.gameLogic.lastPlatform.target).x, 70, "#0000FF", 10);
+		//this.game.debug.pixel(this.platformGroup.toGlobal(this.gameLogic.lastPlatform.target).x + this.gameLogic.platformWidth, 70, "#0000FF", 10);
 		//this.game.debug.bodyInfo(this.player.collider, 32, 32);
 		//this.game.debug.body(this.player);
 		//this.game.debug.body(this.player.collider);
+		//this.game.debug.spriteBounds(this.player);
+
+		/*for (var p of this.player.currPlatforms) {
+			this.game.debug.body(p);
+		}*/
+	}
+
+	setGravity(body: Phaser.Physics.Arcade.Body, gravity: number): any {
+		body.gravity.y = -this.physics.arcade.gravity.y + gravity;
+	}
+
+	resize(width?: number, height?: number) {
+		//alert(this.joystick.getBounds().width);
+		var scale = Math.min(this.game.height / this.MinHeight, this.game.width / this.MinWidth);
+		this.obj.scale.setTo(scale);
+
+		this.gameLogic.resize(!(width && height));
+		this.shouter.position.setTo(this.world.centerX, this.world.centerY);
+		this.shouter.fontSize = this.game.height / 4;
+
+		this.bg.alignIn(this.camera.view, Phaser.CENTER);
+		if (this.game.height > this.bg.height || this.game.width > this.bg.width ||
+			this.game.height !== this.bg.height && this.game.width !== this.bg.width) {
+			var bgScale = Math.max(this.game.height / this.bg.height, this.game.width / this.bg.width);
+			this.bg.scale.setTo(bgScale);
+		}
+		//alert("--" + window.devicePixelRatio + ":" + this.joystick.getBounds().width + ":" + this.joystick.worldScale.x);
 	}
 }
 

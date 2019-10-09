@@ -15,6 +15,6 @@ define(["require", "exports"], function (require, exports) {
         ScreenUtils.b = document.getElementsByTagName('body')[0];
         return ScreenUtils;
     }());
-    exports.default = ScreenUtils;
+    exports.ScreenUtils = ScreenUtils;
 });
 //# sourceMappingURL=utils.js.map

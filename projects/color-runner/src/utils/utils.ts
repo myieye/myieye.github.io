@@ -1,4 +1,4 @@
-export default class ScreenUtils {
+export class ScreenUtils {
     static readonly w = window;
     static readonly e = document.documentElement;
     static readonly b = document.getElementsByTagName('body')[0];

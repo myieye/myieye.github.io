@@ -1,10 +1,16 @@
+import { Point } from "phaser-ce";
+
 export default class MathHelper {
 
-    static getZeroBasedX(relativeToX, xPos) {
+    static getRelativePoint(point:Point, relativeTo:Point) {
+        return new Point(point.x - relativeTo.x, point.y - relativeTo.y);
+    }
+
+    static getRelativeX(relativeToX, xPos) {
         return xPos - relativeToX;
     }
 
-    static getZeroBasedY(relativeToY, yPos) {
+    static getRelativeY(relativeToY, yPos) {
         return yPos - relativeToY;
     }
 

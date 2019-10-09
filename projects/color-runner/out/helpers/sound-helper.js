@@ -1,9 +1,10 @@
-define(["require", "exports", "./settings"], function (require, exports, settings_1) {
+define(["require", "exports", "phaser-ce", "./const"], function (require, exports, phaser_ce_1, const_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var SoundHelper = /** @class */ (function () {
         function SoundHelper() {
             this.songs = [];
+            this.sounds = [];
         }
         Object.defineProperty(SoundHelper, "Instance", {
             get: function () {
@@ -13,31 +14,44 @@ define(["require", "exports", "./settings"], function (require, exports, setting
             configurable: true
         });
         SoundHelper.prototype.init = function (game) {
-            this.game = game;
-        };
-        SoundHelper.prototype.preload = function () {
             var _this = this;
-            settings_1.Const.Audio.Songs.forEach(function (song) {
-                var files = settings_1.Const.Audio.Formats.map(function (format) {
-                    return settings_1.Const.Path.Audio.Songs + song.file + "." + format;
+            this.game = game;
+            const_1.Const.Audio.Songs.forEach(function (song) {
+                var files = const_1.Const.Audio.Formats.map(function (format) {
+                    return const_1.Const.Path.Audio.Songs + song.file + "." + format;
                 });
                 _this.game.load.audio(song.file, files);
             });
-        };
-        SoundHelper.prototype.create = function () {
-            var _this = this;
-            var soundManager = this.soundManager = new Phaser.SoundManager(this.game);
-            soundManager.boot();
-            settings_1.Const.Audio.Songs.forEach(function (song) { return _this.songs[song.file] = soundManager.add(song.file); });
+            const_1.Const.Audio.Sounds.forEach(function (sound) {
+                var files = const_1.Const.Audio.Formats.map(function (format) {
+                    return const_1.Const.Path.Audio.Sounds + sound.file + "." + format;
+                });
+                _this.game.load.audio(sound.file, files);
+            });
+            this.soundManager = new phaser_ce_1.SoundManager(this.game);
+            this.soundManager.boot();
+            const_1.Const.Audio.Songs.forEach(function (song) {
+                _this.songs[song.file] = _this.soundManager.add(song.file);
+                _this.songs[song.file].volume = .1;
+            });
+            const_1.Const.Audio.Sounds.forEach(function (sound) { return _this.sounds[sound.file] = _this.soundManager.add(sound.file); });
             this.game.state.onStateChange.add(this.onStateChange, this);
             var startSoundHandle = setInterval(function () {
-                if (_this.currSong && !_this.currSong.isPlaying) {
-                    _this.playCurrentSong();
-                }
-                else {
+                if (_this.currSong && _this.currSong.isPlaying) {
                     clearInterval(startSoundHandle);
                 }
-            }, 100);
+                else {
+                    _this.playCurrentSong();
+                }
+            }, 200);
+        };
+        SoundHelper.prototype.onPlatformMatched = function () {
+            this.onEffect(const_1.Effect.PlatformSuccess);
+        };
+        SoundHelper.prototype.onEffect = function (effect) {
+            var soundsForEffect = const_1.Const.Audio.Sounds.filter(function (sound) { return sound.effect == effect; });
+            var sound = this.game.rnd.pick(soundsForEffect);
+            this.sounds[sound.file].play();
         };
         SoundHelper.prototype.onStateChange = function (curr, prev) {
             this.currSong = this.chooseSongForState(curr);
@@ -46,12 +60,12 @@ define(["require", "exports", "./settings"], function (require, exports, setting
             }
         };
         SoundHelper.prototype.chooseSongForState = function (state) {
-            var songsForState = settings_1.Const.Audio.Songs.filter(function (song) { return song.state === state; });
+            var songsForState = const_1.Const.Audio.Songs.filter(function (song) { return song.state === state; });
             var song = this.game.rnd.pick(songsForState);
             return song && this.songs[song.file];
         };
         SoundHelper.prototype.playCurrentSong = function () {
-            if (!this.currSong.isPlaying) {
+            if (this.currSong && !this.currSong.isPlaying) {
                 this.soundManager.stopAll();
                 this.currSong.play();
             }

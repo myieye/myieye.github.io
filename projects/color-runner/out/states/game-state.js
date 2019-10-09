@@ -11,84 +11,114 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "../game-logic", "../utils/utils", "../sprites/score", "../sprites/player", "../sprites/color-joystick", "../helpers/settings"], function (require, exports, game_logic_1, utils_1, score_1, player_1, color_joystick_1, settings_1) {
+define(["require", "exports", "phaser-ce", "../game-logic", "../sprites/player", "../sprites/color-joystick", "../helpers/const", "../sprites/score-keeper"], function (require, exports, phaser_ce_1, game_logic_1, player_1, color_joystick_1, const_1, score_keeper_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var GameState = /** @class */ (function (_super) {
         __extends(GameState, _super);
         function GameState() {
-            return _super !== null && _super.apply(this, arguments) || this;
+            var _this = _super !== null && _super.apply(this, arguments) || this;
+            _this.firstUpdate = true;
+            _this.gameStarted = false;
+            return _this;
         }
         GameState.prototype.init = function () {
             this.gameLogic = new game_logic_1.default(this);
-            this.bg = this.add.sprite(0, -100, 'game-bg');
-            this.bg.scale.setTo(2, 2);
-            this.bg.fixedToCamera = true;
+            this.MinWidth = const_1.Const.Player.StartX + const_1.Const.Player.Size.Width +
+                this.gameLogic.loadBuffer + this.gameLogic.loadSpace + const_1.Const.Platform.Animation.LockDist;
+            this.MinHeight = const_1.Const.Score.Height + const_1.Const.Player.Size.Height + const_1.Const.Player.StartVerticalPadding * 2 +
+                const_1.Const.Platform.Size.Height * (const_1.Const.Game.Life + 1);
+            this.bg = this.add.sprite(0, 0, 'game-bg');
+            this.bg.anchor.setTo(.5, .5);
+            //this.game.scale.startFullScreen(false);
+            //this.bg.fixedToCamera = true;
         };
         GameState.prototype.create = function () {
             var _this = this;
             // SETUP WORLD ------------------------------------------------
-            this.world.resize(utils_1.default.width(), utils_1.default.height());
-            this.physics.startSystem(Phaser.Physics.ARCADE);
-            this.physics.arcade.gravity.y = 1000;
-            var colorWheelPadding = 30;
-            var colorWheelRadius = 70;
-            var colorWheelPinRadius = 35;
-            var colorWheelPos = {
-                x: (this.camera.x + this.camera.width) - (colorWheelRadius + colorWheelPadding),
-                //x: this.camera.x + Const.platform.loadBuffer + 100,
-                y: (this.camera.y + this.camera.height) - (colorWheelRadius + colorWheelPadding)
-            };
+            this.physics.startSystem(phaser_ce_1.Physics.ARCADE);
+            this.physics.arcade.gravity.y = 200;
             this.obj = this.game.add.group(undefined, "objects");
             this.ui = this.game.add.group(undefined, "controls");
-            // Color-Joystick
-            var colorWheelColors = this.gameLogic.getColorWheelHexColors();
-            var colorJoystick = new color_joystick_1.default(this.game, colorWheelPos.x, colorWheelPos.y, colorWheelRadius, colorWheelPinRadius, colorWheelColors, function (color) { return _this.onColorChanged(color); });
-            this.ui.add(this.game.add.existing(colorJoystick));
-            // Score-board
-            this.score = this.ui.add(this.game.add.existing(new score_1.default(this.game)));
-            // Player
-            var player = new player_1.default(this, settings_1.Const.Platform.StartX + 15, 50);
-            this.player = this.obj.add(this.game.add.existing(player));
-            // CAMERA
-            this.camera.follow(this.player, Phaser.Camera.FOLLOW_LOCKON);
-            // PLATFORMS
             this.platformGroup = this.obj.add(this.add.group());
+            // Color-Joystick
+            var colorJoystick = new color_joystick_1.default(this.game, function (color) { return _this.onColorChanged(color); });
+            this.joystick = this.ui.add(this.game.add.existing(colorJoystick));
+            // Score-board
+            this.score = this.ui.add(this.game.add.existing(new score_keeper_1.default(this.game)));
+            // Player
+            var player = new player_1.default(this, const_1.Const.Player.StartX, -20); // -Const.Player.Size.Height * 3.5);
+            this.player = this.obj.add(this.game.add.existing(player));
+            // Shouter
+            var shouter = this.shouter = this.game.add.text(this.world.centerX, this.world.centerY, "", {
+                font: "bold 10em Arial", fill: "#fff",
+                stroke: "#000", strokeThickness: 15,
+                boundsAlignH: "right", boundsAlignV: "middle",
+            });
+            shouter.anchor.setTo(0.5);
+            // CAMERA
+            this.camera.follow(this.player, phaser_ce_1.Camera.FOLLOW_LOCKON);
+            // PLATFORMS
+            this.platformGroup.x = const_1.Const.Platform.StartX;
+            this.platformGroup.y = this.game.height - const_1.Const.Platform.NegativeStartY;
             this.platformGroup.enableBody = true;
-            this.platformGroup.physicsBodyType = Phaser.Physics.ARCADE;
+            this.platformGroup.physicsBodyType = phaser_ce_1.Physics.ARCADE;
             this.gameLogic.initGame();
-            this.game.time.events.add(Phaser.Timer.SECOND, function () {
-                _this.player.walk();
-                _this.started = true;
-            }, this);
-            this.currSpeed = settings_1.Const.Speed.Start;
+            this.resize(); // This is necessary when restarting the state
+            this.player.flyDown();
         };
         GameState.prototype.update = function () {
-            if (this.started) {
-                this.checkBounds();
+            var _this = this;
+            if (this.firstUpdate) {
+                this.resize();
+                this.firstUpdate = false;
             }
-            this.gameLogic.update(this.game, this.platformGroup);
+            else if (!this.gameStarted && this.player.speed > 0) {
+                this.gameStarted = true;
+                this.game.time.events.add(phaser_ce_1.Timer.SECOND, function () { return _this.gameLogic.startGame(); });
+            }
+            this.gameLogic.update();
         };
         GameState.prototype.onColorChanged = function (newColor) {
             this.player.setColor(newColor);
         };
-        GameState.prototype.checkBounds = function () {
-            var playerBottom = this.player.position.y;
-            var worldBottom = this.game.world.height;
-            if (playerBottom > worldBottom) {
-                this.restart();
-            }
-        };
         GameState.prototype.restart = function () {
+            this.gameStarted = false;
             this.game.state.start('Game', true, false, this.gameLogic);
         };
         GameState.prototype.render = function () {
+            //this.game.debug.pixel(this.player.getBounds().right, 70, "#FF0000", 10);
+            //this.game.debug.pixel(this.player.getBounds().right + this.gameLogic.loadBuffer, 70, "#00FF00", 10);
+            //this.game.debug.pixel(this.platformGroup.toGlobal(this.gameLogic.lastPlatform.target).x, 70, "#0000FF", 10);
+            //this.game.debug.pixel(this.platformGroup.toGlobal(this.gameLogic.lastPlatform.target).x + this.gameLogic.platformWidth, 70, "#0000FF", 10);
             //this.game.debug.bodyInfo(this.player.collider, 32, 32);
             //this.game.debug.body(this.player);
             //this.game.debug.body(this.player.collider);
+            //this.game.debug.spriteBounds(this.player);
+            /*for (var p of this.player.currPlatforms) {
+                this.game.debug.body(p);
+            }*/
+        };
+        GameState.prototype.setGravity = function (body, gravity) {
+            body.gravity.y = -this.physics.arcade.gravity.y + gravity;
+        };
+        GameState.prototype.resize = function (width, height) {
+            //alert(this.joystick.getBounds().width);
+            var scale = Math.min(this.game.height / this.MinHeight, this.game.width / this.MinWidth);
+            this.obj.scale.setTo(scale);
+            this.gameLogic.resize(!(width && height));
+            this.shouter.position.setTo(this.world.centerX, this.world.centerY);
+            this.shouter.fontSize = this.game.height / 4;
+            this.bg.alignIn(this.camera.view, Phaser.CENTER);
+            if (this.game.height > this.bg.height || this.game.width > this.bg.width ||
+                this.game.height !== this.bg.height && this.game.width !== this.bg.width) {
+                var bgScale = Math.max(this.game.height / this.bg.height, this.game.width / this.bg.width);
+                this.bg.scale.setTo(bgScale);
+            }
+            //alert("--" + window.devicePixelRatio + ":" + this.joystick.getBounds().width + ":" + this.joystick.worldScale.x);
         };
         return GameState;
-    }(Phaser.State));
+    }(phaser_ce_1.State));
     exports.default = GameState;
 });
 // font example

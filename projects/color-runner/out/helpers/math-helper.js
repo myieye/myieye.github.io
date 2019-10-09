@@ -1,13 +1,16 @@
-define(["require", "exports"], function (require, exports) {
+define(["require", "exports", "phaser-ce"], function (require, exports, phaser_ce_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var MathHelper = /** @class */ (function () {
         function MathHelper() {
         }
-        MathHelper.getZeroBasedX = function (relativeToX, xPos) {
+        MathHelper.getRelativePoint = function (point, relativeTo) {
+            return new phaser_ce_1.Point(point.x - relativeTo.x, point.y - relativeTo.y);
+        };
+        MathHelper.getRelativeX = function (relativeToX, xPos) {
             return xPos - relativeToX;
         };
-        MathHelper.getZeroBasedY = function (relativeToY, yPos) {
+        MathHelper.getRelativeY = function (relativeToY, yPos) {
             return yPos - relativeToY;
         };
         MathHelper.getNormalizedVector = function (vector) {

@@ -15,6 +15,7 @@ define(["require", "exports"], function (require, exports) {
         (function (Color) {
             Color.StartColors = [0xFD5308, 0x66B032, 0x0391CD, 0x800080, 0xFFFF00];
             Color.ChangeSpeed = 5;
+            Color.DefaultTint = 0x333333;
         })(Color = Const.Color || (Const.Color = {}));
         var Speed;
         (function (Speed) {
@@ -33,7 +34,6 @@ define(["require", "exports"], function (require, exports) {
             Platform.Width = 100;
             Platform.Height = 15;
             Platform.LoadBuffer = 450;
-            Platform.DefaultTint = 0x333333;
             var Animation;
             (function (Animation) {
                 Animation.LockDist = 60;

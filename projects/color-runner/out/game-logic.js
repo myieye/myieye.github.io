@@ -1,54 +1,185 @@
-define(["require", "exports", "phaser-ce", "./sprites/platform", "./helpers/settings"], function (require, exports, phaser_ce_1, platform_1, settings_1) {
+define(["require", "exports", "phaser-ce", "./sprites/platform", "./helpers/const", "./helpers/sound-helper"], function (require, exports, phaser_ce_1, platform_1, const_1, sound_helper_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
+    var PhaseState;
+    (function (PhaseState) {
+        PhaseState[PhaseState["Unstarted"] = 0] = "Unstarted";
+        PhaseState[PhaseState["Play"] = 1] = "Play";
+        PhaseState[PhaseState["Transition"] = 2] = "Transition";
+        PhaseState[PhaseState["Lost"] = 3] = "Lost";
+    })(PhaseState = exports.PhaseState || (exports.PhaseState = {}));
     var GameLogic = /** @class */ (function () {
         function GameLogic(gameState) {
-            this.colors = settings_1.Const.Color.StartColors;
-            this.gameState = gameState;
-            this.game = gameState.game;
+            this.state = gameState;
+            this.currLife = const_1.Const.Game.Life;
+            this.phaseState = PhaseState.Unstarted;
         }
         GameLogic.prototype.initGame = function () {
-            this.currPlatformY = this.gameState.world.height - settings_1.Const.Platform.StartY;
-            var startPlatforms = settings_1.Const.Platform.StartPlatforms;
-            for (var _i = 0, startPlatforms_1 = startPlatforms; _i < startPlatforms_1.length; _i++) {
-                var tint = startPlatforms_1[_i];
-                this.addPlatform(this.gameState.platformGroup, tint);
+            this.game = this.state.game;
+            this.platformGroup = this.state.platformGroup;
+            this.soundHelper = sound_helper_1.default.Instance;
+            this.currNegPlatformY = this.game.height - this.platformGroup.y;
+            for (var _i = 0, _a = const_1.Const.Platform.StartPlatforms; _i < _a.length; _i++) {
+                var tint = _a[_i];
+                this.addPlatform(this.state.platformGroup, tint);
             }
+            this.configureNextPhase();
+        };
+        GameLogic.prototype.startGame = function () {
+            var _this = this;
+            this.phaseState = PhaseState.Transition;
+            this.game.time.events.add(phaser_ce_1.Timer.SECOND, function () {
+                _this.startCurrentPhase();
+            });
+        };
+        GameLogic.prototype.update = function () {
+            var _this = this;
+            if (this.currSpeed * this.state.player.speed) {
+                if (this.playerOutOfBounds()) {
+                    this.state.platformGroup.removeAll(true);
+                    this.phaseState = PhaseState.Lost;
+                    this.game.time.events.add(phaser_ce_1.Timer.SECOND * 2, function () { return _this.state.restart(); });
+                }
+                this.platformGroup.x -= this.currSpeed * this.state.player.speed;
+                if (this.phaseState !== PhaseState.Lost && this.lastPlatform && this.needNewPlatform()) {
+                    var tint = this.pickPlatformColor();
+                    this.addPlatform(this.platformGroup, tint, true);
+                }
+            }
+        };
+        GameLogic.prototype.startCurrentPhase = function () {
+            var _this = this;
+            this.state.joystick.setColors(this.colors);
+            this.state.score.init(this.colors, this.currPhase.target);
+            this.state.shouter.text = "Phase " + this.currPhaseNum;
+            this.game.time.events.add(phaser_ce_1.Timer.SECOND * 3, function () {
+                _this.state.shouter.text = "";
+                _this.phaseState = PhaseState.Play;
+            });
+        };
+        GameLogic.prototype.configureNextPhase = function () {
+            this.phaseState = PhaseState.Transition;
+            this.currPhaseNum = (this.currPhaseNum || 0) + 1;
+            this.colors = const_1.Const.Color.StartColors.slice()
+                .concat(const_1.Const.Color.FutureColors.slice(0, Math.floor((this.currPhaseNum - 1) / 1)));
+            var nextPhase = const_1.Const.Phase.Phases[this.currPhaseNum - 1];
+            if (nextPhase) {
+                this.currPhase = nextPhase;
+            }
+            else {
+                this.currPhase = {
+                    speed: {
+                        start: this.currPhase.speed.start * 1.05,
+                        increment: this.currPhase.speed.increment * 1,
+                        increaseInterval: this.currPhase.speed.increaseInterval
+                    },
+                    target: Math.ceil(this.currPhase.target * 1.1)
+                };
+            }
+            this.currSpeed = this.currPhase.speed.start;
         };
         GameLogic.prototype.addPlatform = function (platformGroup, tint, animate) {
             if (animate === void 0) { animate = false; }
             var newPlatformX = this.lastPlatform
-                ? this.lastPlatform.targetX + settings_1.Const.Platform.Width
-                : settings_1.Const.Platform.StartX;
-            var platformNumber = (this.lastPlatform && this.lastPlatform.number) || 1;
-            this.lastPlatform = platformGroup.add(this.game.add.existing(new platform_1.default(this.game, newPlatformX, this.currPlatformY, platformNumber, tint, animate)));
+                ? this.lastPlatform.target.x + this.lastPlatform.width - Math.ceil(this.lastPlatform.width * const_1.Const.Platform.Size.LockSizePerc)
+                : 0;
+            var prevPlatformNumber = (this.lastPlatform && this.lastPlatform.number) || 0;
+            this.lastPlatform = platformGroup.add(this.game.add.existing(new platform_1.default(this.game, newPlatformX, platformGroup, prevPlatformNumber + 1, tint, animate)));
         };
-        GameLogic.prototype.update = function (game, platformGroup) {
-            if (this.gameState.started && this.lastPlatform && (this.lastPlatform.worldPosition.x < settings_1.Const.Platform.LoadBuffer)) {
-                var tint = game.rnd.pick(this.colors);
-                this.addPlatform(platformGroup, tint, true);
+        GameLogic.prototype.pickPlatformColor = function () {
+            if (this.phaseState !== PhaseState.Play) {
+                return const_1.Const.Color.DefaultTint;
             }
-            platformGroup.x -= this.gameState.currSpeed;
+            else if (this.lastPlatform.tint != const_1.Const.Color.DefaultTint) {
+                return this.game.rnd.pick(this.colors);
+            }
+            else {
+                return this.game.rnd.pick(this.colors.filter(function (color) { return color != const_1.Const.Color.DefaultTint; }));
+            }
         };
-        GameLogic.prototype.getColorWheelHexColors = function () {
-            return this.colors;
+        GameLogic.prototype.resize = function (forcedResize) {
+            this.platformGroup.y = this.game.height / this.state.obj.scale.y - this.currLife * platform_1.default.height;
+            if (!forcedResize) {
+                this.state.player.y = this.platformGroup.y - this.state.player.height;
+            }
         };
         GameLogic.prototype.onPlatformMissed = function (platform) {
             this.onPlatformComplete(platform);
-            platform.parent.y += settings_1.Const.Platform.Height;
-            this.gameState.player.y += settings_1.Const.Platform.Height;
+            this.currLife--;
+            platform.parent.y += const_1.Const.Platform.Size.Height;
+            this.state.player.y += const_1.Const.Platform.Size.Height;
             platform.onMissed();
         };
         GameLogic.prototype.onPlatformMatched = function (platform) {
-            this.onPlatformComplete(platform);
-            this.gameState.score.increment();
+            var color = platform.tint;
             platform.onMatched();
-        };
-        GameLogic.prototype.onPlatformComplete = function (platform) {
-            if (platform.number % settings_1.Const.Speed.IncreaseInterval == 0) {
-                this.gameState.currSpeed = phaser_ce_1.Math.clamp(this.gameState.currSpeed + settings_1.Const.Speed.Increment, 0, settings_1.Const.Speed.Max);
+            this.onPlatformComplete(platform);
+            this.soundHelper.onPlatformMatched();
+            if (this.state.score.increment(color)) {
+                if (this.onColorComplete(color) && this.allPlatformsComplete()) {
+                    this.onPhaseComplete();
+                }
             }
         };
+        GameLogic.prototype.onPhaseComplete = function () {
+            var _this = this;
+            this.state.shouter.text = this.game.rnd.pick(["Nice!", "Woohoo!", "Solid!", "Incredible!", "Great!"]);
+            this.state.player.onPhaseComplete();
+            this.game.time.events.add(phaser_ce_1.Timer.SECOND * 2, function () {
+                _this.state.score.resetColors();
+                _this.configureNextPhase();
+                _this.startCurrentPhase();
+            });
+        };
+        GameLogic.prototype.needNewPlatform = function () {
+            return this.state.player.getBounds().right + this.loadBuffer >
+                this.platformGroup.toGlobal(this.lastPlatform.target).x;
+        };
+        GameLogic.prototype.playerOutOfBounds = function () {
+            var playerBottom = this.state.player.getBounds().bottom;
+            var worldBottom = this.game.world.height;
+            return Math.ceil(playerBottom) >= worldBottom;
+        };
+        GameLogic.prototype.onPlatformComplete = function (platform) {
+            if (platform.number % this.currPhase.speed.increaseInterval == 0) {
+                this.currSpeed = phaser_ce_1.Math.clamp(this.currSpeed + this.currPhase.speed.increment, 0, const_1.Const.Speed.Max);
+                this.state.player.onChangeSpeed(this.currSpeed);
+            }
+        };
+        GameLogic.prototype.onColorComplete = function (color) {
+            for (var i in this.colors) {
+                if (this.colors[i] === color) {
+                    this.colors[i] = const_1.Const.Color.DefaultTint;
+                }
+            }
+            return this.colors.reduce(function (others, curr) { return others && curr === const_1.Const.Color.DefaultTint; }, true);
+        };
+        GameLogic.prototype.allPlatformsComplete = function () {
+            return this.platformGroup.children.reduce(function (others, curr) {
+                return others && (curr.missed || curr.matched || curr.tint == const_1.Const.Color.DefaultTint);
+            }, true);
+        };
+        Object.defineProperty(GameLogic.prototype, "hasLost", {
+            get: function () {
+                return this.phaseState === PhaseState.Lost;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(GameLogic.prototype, "loadBuffer", {
+            get: function () {
+                return platform_1.default.width * const_1.Const.Platform.Foresight - this.loadSpace;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(GameLogic.prototype, "loadSpace", {
+            get: function () {
+                return platform_1.default.width * 2;
+            },
+            enumerable: true,
+            configurable: true
+        });
         return GameLogic;
     }());
     exports.default = GameLogic;

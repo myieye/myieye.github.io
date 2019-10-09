@@ -11,16 +11,16 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "./utils/utils", "./states/boot-state", "./states/preloader-state", "./states/game-state", "./helpers/settings"], function (require, exports, utils_1, boot_state_1, preloader_state_1, game_state_1, settings_1) {
+define(["require", "exports", "./states/boot-state", "./states/preloader-state", "./states/game-state", "./helpers/const", "phaser-ce"], function (require, exports, boot_state_1, preloader_state_1, game_state_1, const_1, phaser_ce_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var ColorRunnerGame = /** @class */ (function (_super) {
         __extends(ColorRunnerGame, _super);
         function ColorRunnerGame() {
-            var _this = _super.call(this, utils_1.default.width(), utils_1.default.height(), Phaser.CANVAS, 'game') || this;
-            _this.state.add(settings_1.Const.States.Boot, boot_state_1.default);
-            _this.state.add(settings_1.Const.States.Preloader, preloader_state_1.default);
-            _this.state.add(settings_1.Const.States.Game, game_state_1.default);
+            var _this = _super.call(this, "100%", "100%", phaser_ce_1.CANVAS, 'game') || this;
+            _this.state.add(const_1.Const.States.Boot, boot_state_1.default);
+            _this.state.add(const_1.Const.States.Preloader, preloader_state_1.default);
+            _this.state.add(const_1.Const.States.Game, game_state_1.default);
             return _this;
         }
         Object.defineProperty(ColorRunnerGame, "Instance", {
@@ -30,10 +30,10 @@ define(["require", "exports", "./utils/utils", "./states/boot-state", "./states/
         });
         ;
         ColorRunnerGame.prototype.start = function () {
-            this.state.start(settings_1.Const.States.Boot);
+            this.state.start(const_1.Const.States.Boot);
         };
         return ColorRunnerGame;
-    }(Phaser.Game));
+    }(phaser_ce_1.Game));
     exports.ColorRunnerGame = ColorRunnerGame;
 });
 //# sourceMappingURL=color-runner.js.map

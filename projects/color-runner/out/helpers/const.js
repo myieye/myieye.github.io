@@ -1,0 +1,161 @@
+define(["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var Song = /** @class */ (function () {
+        function Song() {
+        }
+        return Song;
+    }());
+    var Effect;
+    (function (Effect) {
+        Effect[Effect["PlatformSuccess"] = 0] = "PlatformSuccess";
+    })(Effect = exports.Effect || (exports.Effect = {}));
+    var EffectConfig = /** @class */ (function () {
+        function EffectConfig() {
+        }
+        return EffectConfig;
+    }());
+    var Image = /** @class */ (function () {
+        function Image() {
+        }
+        return Image;
+    }());
+    exports.Image = Image;
+    var Phase = /** @class */ (function () {
+        function Phase() {
+        }
+        return Phase;
+    }());
+    exports.Phase = Phase;
+    var PhaseSpeed = /** @class */ (function () {
+        function PhaseSpeed() {
+        }
+        return PhaseSpeed;
+    }());
+    var Const;
+    (function (Const) {
+        var States;
+        (function (States) {
+            States["Boot"] = "Boot";
+            States["Preloader"] = "Preloader";
+            States["Menu"] = "Menu";
+            States["Game"] = "Game";
+        })(States = Const.States || (Const.States = {}));
+        ;
+        var Game;
+        (function (Game) {
+            Game.Life = 3;
+        })(Game = Const.Game || (Const.Game = {}));
+        var Images;
+        (function (Images) {
+            Images.Player = { name: "player", file: "player/player.png", frameFile: "player/player.json" };
+            Images.Platform = { name: "platform", file: "platform.gif" };
+            Images.GameBackground = { name: "game-bg", file: "backgrounds/space-scene_01.jpg" };
+            Images.Joystick = { name: "joystick", file: "joystick/joystick.png" };
+        })(Images = Const.Images || (Const.Images = {}));
+        var Color;
+        (function (Color) {
+            Color.StartColors = [0xFD5308, 0x66B032, 0x0391CD]; //, 0x800080];//, 0xFFFF00];
+            Color.FutureColors = [0x800080, 0xFFFF00];
+            Color.ChangeSpeed = 20;
+            Color.DefaultTint = 0x333333;
+        })(Color = Const.Color || (Const.Color = {}));
+        var Score;
+        (function (Score) {
+            Score.Height = 60;
+        })(Score = Const.Score || (Const.Score = {}));
+        var Speed;
+        (function (Speed) {
+            Speed.Max = 4;
+        })(Speed = Const.Speed || (Const.Speed = {}));
+        var Platform;
+        (function (Platform) {
+            Platform.StartPlatforms = [
+                null, null, null //, null
+            ];
+            var Size;
+            (function (Size) {
+                Size.Width = 103;
+                Size.Height = 15;
+                Size.LockSize = 4;
+                Size.LockSizePerc = Size.LockSize / Size.Width;
+            })(Size = Platform.Size || (Platform.Size = {}));
+            Platform.StartX = -.5 * Size.Width;
+            Platform.NegativeStartY = Size.Height * Game.Life;
+            Platform.Foresight = 4;
+            var Animation;
+            (function (Animation) {
+                Animation.LockDist = 60;
+                Animation.DownSpeed = 700;
+                Animation.LockSpeed = 200;
+            })(Animation = Platform.Animation || (Platform.Animation = {}));
+        })(Platform = Const.Platform || (Const.Platform = {}));
+        var Joystick;
+        (function (Joystick) {
+            Joystick.MaxDiameter = 200;
+            Joystick.MinDiameter = 160;
+            Joystick.Diameter = 140;
+            Joystick.Padding = 30;
+            Joystick.PinDiameterPercent = .45;
+        })(Joystick = Const.Joystick || (Const.Joystick = {}));
+        var Player;
+        (function (Player) {
+            var Size;
+            (function (Size) {
+                Size.Height = 65;
+                Size.Width = 100;
+            })(Size = Player.Size || (Player.Size = {}));
+            Player.StartX = 0; //Platform.StartX;// + Platform.Size.Width / 2;
+            Player.StartVerticalPadding = Size.Height * .2;
+        })(Player = Const.Player || (Const.Player = {}));
+        var Path;
+        (function (Path) {
+            var Audio;
+            (function (Audio) {
+                var Base = "./assets/audio/";
+                Audio.Songs = Base + "songs/";
+                Audio.Sounds = Base + "effects/";
+            })(Audio = Path.Audio || (Path.Audio = {}));
+            Path.Image = "./img/";
+        })(Path = Const.Path || (Const.Path = {}));
+        var Audio;
+        (function (Audio) {
+            Audio.Formats = ["m4a", "mp3"];
+            Audio.Songs = [
+                { state: States.Menu, file: "bensound-endlessmotion" },
+                { state: States.Game, file: "bensound-dubstep" },
+                { state: States.Game, file: "bensound-moose" },
+                { state: States.Game, file: "bensound-popdance" }
+            ];
+            Audio.Sounds = [
+                { effect: Effect.PlatformSuccess, file: "platform_success" }
+            ];
+        })(Audio = Const.Audio || (Const.Audio = {}));
+        var Phase;
+        (function (Phase) {
+            var Helpers = /** @class */ (function () {
+                function Helpers() {
+                }
+                Helpers.phaseSpeed = function (options) {
+                    return {
+                        start: (options && options.start) || 1.5,
+                        increment: (options && options.increment) || .025,
+                        increaseInterval: (options && options.increaseInterval) || 3
+                    };
+                };
+                return Helpers;
+            }());
+            Phase.Phases = [
+                {
+                    target: 1,
+                    speed: Helpers.phaseSpeed()
+                },
+                {
+                    target: 2,
+                    speed: Helpers.phaseSpeed({ start: 2 })
+                }
+            ];
+        })(Phase = Const.Phase || (Const.Phase = {}));
+    })(Const = exports.Const || (exports.Const = {}));
+});
+//# sourceMappingURL=const.js.map
