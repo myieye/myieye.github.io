@@ -11,7 +11,7 @@ export default class PreloaderState extends State {
 	}
 
 	create() {
-		this.game.state.start(Const.States.Game, true, false);
+		this.game.state.start(Const.States.MainMenu, true, false);
 	}
 
 	private loadImages() {
