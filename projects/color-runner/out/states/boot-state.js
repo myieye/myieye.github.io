@@ -26,6 +26,7 @@ define(["require", "exports", "phaser-ce", "../helpers/const"], function (requir
             this.game.scale.pageAlignHorizontally = true;
             this.game.scale.pageAlignVertically = true;
             this.game.state.start(const_1.Const.States.Preloader);
+            this.game.add.text(0, 0, "hack", { font: "1px tricolor-bw" });
         };
         return BootState;
     }(phaser_ce_1.State));

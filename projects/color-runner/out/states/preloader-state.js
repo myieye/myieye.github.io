@@ -21,6 +21,7 @@ define(["require", "exports", "phaser-ce", "../helpers/sound-helper", "../helper
         }
         PreloaderState.prototype.preload = function () {
             this.loadImages();
+            this.game.load.bitmapFont("tricolor", "./font/tricolor.png", "./font/tricolor.fnt");
             sound_helper_1.default.Instance.init(this.game);
         };
         PreloaderState.prototype.create = function () {

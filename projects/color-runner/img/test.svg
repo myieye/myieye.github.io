@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 103 15" width="103" height="15">
+	<defs>
+		<rect id="conn" height="3" width="3" />
+		<linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%">
+		  <stop offset="0%" style="stop-color:rgb(250,250,250)" />
+		  <stop offset="100%" style="stop-color:rgb(195,195,195)" />
+		</linearGradient>
+	</defs>
+	<path fill="#FFFF00" d="M3 0 103 0 103 3 100 3 100 6 103 6 103 9 100 9 100 12 103 12 103 15 3 15 3 12 0 12 0 9 3 9 3 6 0 6 0 3 3 3 3 0" />
+	<!--g fill="url(#grad1)">
+		<rect width="97" height="15" x="3" style="fill:#222" id="middle" />
+		<use xlink:href="#conn" y="3" />
+		<use xlink:href="#conn" y="9" />
+		<use xlink:href="#conn" x="100" y="0" />
+		<use xlink:href="#conn" x="100" y="6" />
+		<use xlink:href="#conn" x="100" y="12" />
+	</g-->
+</svg>

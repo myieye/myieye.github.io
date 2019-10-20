@@ -11,7 +11,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "phaser-ce", "../game-logic", "../sprites/player", "../sprites/color-joystick", "../helpers/const", "../sprites/score-keeper"], function (require, exports, phaser_ce_1, game_logic_1, player_1, color_joystick_1, const_1, score_keeper_1) {
+define(["require", "exports", "phaser-ce", "../game-logic", "../sprites/player", "../sprites/color-joystick", "../helpers/const", "../sprites/score-keeper", "../sprites/popup", "../sprites/pause-button"], function (require, exports, phaser_ce_1, game_logic_1, player_1, color_joystick_1, const_1, score_keeper_1, popup_1, pause_button_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var GameState = /** @class */ (function (_super) {
@@ -44,14 +44,17 @@ define(["require", "exports", "phaser-ce", "../game-logic", "../sprites/player",
             // Color-Joystick
             var colorJoystick = new color_joystick_1.default(this.game, function (color) { return _this.onColorChanged(color); });
             this.joystick = this.ui.add(this.game.add.existing(colorJoystick));
+            this.joystick.setColors(const_1.Const.Color.StartColors);
             // Score-board
             this.score = this.ui.add(this.game.add.existing(new score_keeper_1.default(this.game)));
+            // Pause button
+            this.pause = this.ui.add(this.game.add.existing(new pause_button_1.default(this.game)));
             // Player
             var player = new player_1.default(this, const_1.Const.Player.StartX, -20); // -Const.Player.Size.Height * 3.5);
             this.player = this.obj.add(this.game.add.existing(player));
             // Shouter
             var shouter = this.shouter = this.game.add.text(this.world.centerX, this.world.centerY, "", {
-                font: "bold 10em Arial", fill: "#fff",
+                font: "bold 10em tricolor-bw", fill: "#fff",
                 stroke: "#000", strokeThickness: 15,
                 boundsAlignH: "right", boundsAlignV: "middle",
             });
@@ -63,9 +66,25 @@ define(["require", "exports", "phaser-ce", "../game-logic", "../sprites/player",
             this.platformGroup.y = this.game.height - const_1.Const.Platform.NegativeStartY;
             this.platformGroup.enableBody = true;
             this.platformGroup.physicsBodyType = phaser_ce_1.Physics.ARCADE;
+            this.popup = this.game.add.existing(new popup_1.default(this.game));
             this.gameLogic.initGame();
             this.resize(); // This is necessary when restarting the state
             this.player.flyDown();
+            this.input.keyboard.onDownCallback = function (e) {
+                if (e.which == Phaser.KeyCode.SPACEBAR) {
+                    _this.game.paused = !_this.game.paused;
+                }
+            };
+            this.state.onPausedCallback = function () {
+                _this.joystick.enabled = false;
+                _this.pause.visible = false;
+                _this.popup.visible = true;
+            };
+            this.state.onResumedCallback = function () {
+                _this.joystick.enabled = true;
+                _this.pause.visible = true;
+                _this.popup.visible = false;
+            };
         };
         GameState.prototype.update = function () {
             var _this = this;
@@ -87,6 +106,7 @@ define(["require", "exports", "phaser-ce", "../game-logic", "../sprites/player",
             this.game.state.start('Game', true, false, this.gameLogic);
         };
         GameState.prototype.render = function () {
+            //this.game.debug.spriteBounds(this.gameLogic.p.platform);
             //this.game.debug.pixel(this.player.getBounds().right, 70, "#FF0000", 10);
             //this.game.debug.pixel(this.player.getBounds().right + this.gameLogic.loadBuffer, 70, "#00FF00", 10);
             //this.game.debug.pixel(this.platformGroup.toGlobal(this.gameLogic.lastPlatform.target).x, 70, "#0000FF", 10);
@@ -109,12 +129,10 @@ define(["require", "exports", "phaser-ce", "../game-logic", "../sprites/player",
             this.gameLogic.resize(!(width && height));
             this.shouter.position.setTo(this.world.centerX, this.world.centerY);
             this.shouter.fontSize = this.game.height / 4;
-            this.bg.alignIn(this.camera.view, Phaser.CENTER);
-            if (this.game.height > this.bg.height || this.game.width > this.bg.width ||
-                this.game.height !== this.bg.height && this.game.width !== this.bg.width) {
-                var bgScale = Math.max(this.game.height / this.bg.height, this.game.width / this.bg.width);
-                this.bg.scale.setTo(bgScale);
-            }
+            this.game.scale.scaleSprite(this.bg).alignIn(this.camera.view, Phaser.CENTER);
+            this.popup.resize();
+            this.game.scale.scaleSprite(this.pause, 30, 30);
+            this.pause.position.setTo(this.game.width - this.pause.width * 1.5, this.score.height + this.pause.height * .1);
             //alert("--" + window.devicePixelRatio + ":" + this.joystick.getBounds().width + ":" + this.joystick.worldScale.x);
         };
         return GameState;

@@ -11,7 +11,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "./states/boot-state", "./states/preloader-state", "./states/game-state", "./helpers/const", "phaser-ce"], function (require, exports, boot_state_1, preloader_state_1, game_state_1, const_1, phaser_ce_1) {
+define(["require", "exports", "./states/boot-state", "./states/preloader-state", "./states/game-state", "./helpers/const", "phaser-ce", "./states/main-menu-state"], function (require, exports, boot_state_1, preloader_state_1, game_state_1, const_1, phaser_ce_1, main_menu_state_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var ColorRunnerGame = /** @class */ (function (_super) {
@@ -20,6 +20,7 @@ define(["require", "exports", "./states/boot-state", "./states/preloader-state",
             var _this = _super.call(this, "100%", "100%", phaser_ce_1.CANVAS, 'game') || this;
             _this.state.add(const_1.Const.States.Boot, boot_state_1.default);
             _this.state.add(const_1.Const.States.Preloader, preloader_state_1.default);
+            _this.state.add(const_1.Const.States.MainMenu, main_menu_state_1.default);
             _this.state.add(const_1.Const.States.Game, game_state_1.default);
             return _this;
         }

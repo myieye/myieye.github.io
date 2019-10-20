@@ -4,6 +4,8 @@ import Player from "../sprites/player";
 import ColorJoystick from "../sprites/color-joystick";
 import { Const } from '../helpers/const';
 import ScoreKeeper from '../sprites/score-keeper';
+import Popup from '../sprites/popup';
+import PauseButton from '../sprites/pause-button';
 
 export default class GameState extends State {
 	gameLogic: GameLogic;
@@ -17,6 +19,8 @@ export default class GameState extends State {
 	score: ScoreKeeper;
 	joystick: ColorJoystick;
 	shouter: Text;
+	popup: Popup;
+	pause: PauseButton;
 
 	MinWidth: number;
 	MinHeight: number;
@@ -49,9 +53,13 @@ export default class GameState extends State {
 		// Color-Joystick
 		var colorJoystick = new ColorJoystick(this.game, (color) => this.onColorChanged(color));
 		this.joystick = this.ui.add(this.game.add.existing(colorJoystick));
+		this.joystick.setColors(Const.Color.StartColors);
 
 		// Score-board
 		this.score = this.ui.add(this.game.add.existing(new ScoreKeeper(this.game)));
+
+		// Pause button
+		this.pause = this.ui.add(this.game.add.existing(new PauseButton(this.game)));
 
 		// Player
 		var player = new Player(this, Const.Player.StartX, -20);// -Const.Player.Size.Height * 3.5);
@@ -60,7 +68,7 @@ export default class GameState extends State {
 		// Shouter
 		var shouter = this.shouter = this.game.add.text(this.world.centerX, this.world.centerY, "",
 			{
-				font: "bold 10em Arial", fill: "#fff",
+				font: "bold 10em tricolor-bw", fill: "#fff",
 				stroke: "#000", strokeThickness: 15,
 				boundsAlignH: "right", boundsAlignV: "middle",
 			});
@@ -75,10 +83,28 @@ export default class GameState extends State {
 		this.platformGroup.enableBody = true;
 		this.platformGroup.physicsBodyType = Physics.ARCADE;
 
+		this.popup = this.game.add.existing(new Popup(this.game));
+
 		this.gameLogic.initGame();
 		this.resize(); // This is necessary when restarting the state
 
 		this.player.flyDown();
+
+		this.input.keyboard.onDownCallback = (e: KeyboardEvent) => {
+			if (e.which == Phaser.KeyCode.SPACEBAR) {
+				this.game.paused = !this.game.paused;
+			}
+		};
+		this.state.onPausedCallback = () => {
+			this.joystick.enabled = false;
+			this.pause.visible = false;
+			this.popup.visible = true;
+		};
+		this.state.onResumedCallback = () => {
+			this.joystick.enabled = true;
+			this.pause.visible = true;
+			this.popup.visible = false;
+		};
 	}
 
 	update() {
@@ -103,6 +129,7 @@ export default class GameState extends State {
 	}
 
 	render() {
+		//this.game.debug.spriteBounds(this.gameLogic.p.platform);
 		//this.game.debug.pixel(this.player.getBounds().right, 70, "#FF0000", 10);
 		//this.game.debug.pixel(this.player.getBounds().right + this.gameLogic.loadBuffer, 70, "#00FF00", 10);
 		//this.game.debug.pixel(this.platformGroup.toGlobal(this.gameLogic.lastPlatform.target).x, 70, "#0000FF", 10);
@@ -130,12 +157,12 @@ export default class GameState extends State {
 		this.shouter.position.setTo(this.world.centerX, this.world.centerY);
 		this.shouter.fontSize = this.game.height / 4;
 
-		this.bg.alignIn(this.camera.view, Phaser.CENTER);
-		if (this.game.height > this.bg.height || this.game.width > this.bg.width ||
-			this.game.height !== this.bg.height && this.game.width !== this.bg.width) {
-			var bgScale = Math.max(this.game.height / this.bg.height, this.game.width / this.bg.width);
-			this.bg.scale.setTo(bgScale);
-		}
+		this.game.scale.scaleSprite(this.bg).alignIn(this.camera.view, Phaser.CENTER);
+
+		this.popup.resize();
+
+		this.game.scale.scaleSprite(this.pause as any, 30, 30);
+		this.pause.position.setTo(this.game.width - this.pause.width * 1.5, this.score.height + this.pause.height * .1);
 		//alert("--" + window.devicePixelRatio + ":" + this.joystick.getBounds().width + ":" + this.joystick.worldScale.x);
 	}
 }

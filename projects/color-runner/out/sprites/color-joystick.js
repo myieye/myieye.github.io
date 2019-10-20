@@ -24,7 +24,7 @@ define(["require", "exports", "phaser-ce", "../helpers/math-helper", "../helpers
             _this.wheel = _this.add(game.add.group());
             // BORDER
             var border = _this.border = _this.wheel.add(game.add.graphics());
-            border.lineStyle(10, 0xFFFFFF);
+            border.lineStyle(10, 0xEFEFEF);
             border.arc(0, 0, const_1.Const.Joystick.Diameter / 2, -0.5, phaser_ce_1.Math.PI2, false);
             // COLOR PIE ----------------------------------------------
             _this.colorPie = _this.wheel.add(game.add.graphics());
@@ -49,6 +49,11 @@ define(["require", "exports", "phaser-ce", "../helpers/math-helper", "../helpers
             _this.resize();
             return _this;
         }
+        Object.defineProperty(ColorJoystick.prototype, "enabled", {
+            set: function (enabled) { this.dragger.inputEnabled = enabled; },
+            enumerable: true,
+            configurable: true
+        });
         ColorJoystick.prototype.setColors = function (colors) {
             this.colors = [];
             var sliceAngleRads = phaser_ce_1.Math.PI2 / colors.length;
@@ -139,6 +144,9 @@ define(["require", "exports", "phaser-ce", "../helpers/math-helper", "../helpers
                     return this.colors[i].color;
                 }
             }
+        };
+        ColorJoystick.prototype.onPhaseComplete = function () {
+            this.currColor = const_1.Const.Color.DefaultPlayerTint;
         };
         Object.defineProperty(ColorJoystick.prototype, "radius", {
             get: function () {

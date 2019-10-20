@@ -14,6 +14,8 @@ export default class ColorJoystick extends Group {
     private dragger: Sprite;
     private wheel: Group;
 
+    set enabled(enabled: boolean) { this.dragger.inputEnabled = enabled; }
+
     constructor(game: Game, onColorChanged: OnColorChangedHandler) {
         super(game);
 
@@ -25,7 +27,7 @@ export default class ColorJoystick extends Group {
 
         // BORDER
         var border = this.border = this.wheel.add(game.add.graphics());
-        border.lineStyle(10, 0xFFFFFF);
+        border.lineStyle(10, 0xEFEFEF);
         border.arc(0, 0, Const.Joystick.Diameter / 2, -0.5, PMath.PI2, false);
 
         // COLOR PIE ----------------------------------------------
@@ -89,13 +91,13 @@ export default class ColorJoystick extends Group {
         var size = Math.min(
             PMath.clamp(this.wheel.width, Const.Joystick.MinDiameter, Const.Joystick.MaxDiameter),
             this.game.height / 2, this.game.width / 4);
-        
+
         this.wheel.width = this.wheel.height = size;
         this.pin.width = this.pin.height = size * Const.Joystick.PinDiameterPercent;
 
         let xOffset = this.colorPie.getBounds().halfWidth + Math.min(Const.Joystick.Padding, this.game.width / 20);
         let yOffset = (this.colorPie.getBounds().halfWidth + Math.min(Const.Joystick.Padding, this.game.height / 20));
-        
+
         this.cameraOffset.setTo(
             (this.game.camera.x + this.game.camera.width) - xOffset,
             (this.game.camera.y + this.game.camera.height) - yOffset);
@@ -174,7 +176,11 @@ export default class ColorJoystick extends Group {
         }
     }
 
-    private get radius():number {
+    onPhaseComplete() {
+        this.currColor = Const.Color.DefaultPlayerTint;
+    }
+
+    private get radius(): number {
         return this.colorPie.getBounds().halfWidth;
     }
 }

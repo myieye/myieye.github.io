@@ -1,4 +1,4 @@
-define(["require", "exports", "phaser-ce", "./sprites/platform", "./helpers/const", "./helpers/sound-helper"], function (require, exports, phaser_ce_1, platform_1, const_1, sound_helper_1) {
+define(["require", "exports", "phaser-ce", "./sprites/platform", "./helpers/const", "./helpers/sound-helper", "./helpers/color-exploder"], function (require, exports, phaser_ce_1, platform_1, const_1, sound_helper_1, color_exploder_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var PhaseState;
@@ -17,12 +17,14 @@ define(["require", "exports", "phaser-ce", "./sprites/platform", "./helpers/cons
         GameLogic.prototype.initGame = function () {
             this.game = this.state.game;
             this.platformGroup = this.state.platformGroup;
+            this.platforms = [];
             this.soundHelper = sound_helper_1.default.Instance;
             this.currNegPlatformY = this.game.height - this.platformGroup.y;
             for (var _i = 0, _a = const_1.Const.Platform.StartPlatforms; _i < _a.length; _i++) {
                 var tint = _a[_i];
                 this.addPlatform(this.state.platformGroup, tint);
             }
+            //this.testExplode();
             this.configureNextPhase();
         };
         GameLogic.prototype.startGame = function () {
@@ -40,7 +42,7 @@ define(["require", "exports", "phaser-ce", "./sprites/platform", "./helpers/cons
                     this.phaseState = PhaseState.Lost;
                     this.game.time.events.add(phaser_ce_1.Timer.SECOND * 2, function () { return _this.state.restart(); });
                 }
-                this.platformGroup.x -= this.currSpeed * this.state.player.speed;
+                //this.platformGroup.x -= this.currSpeed * this.state.player.speed;
                 if (this.phaseState !== PhaseState.Lost && this.lastPlatform && this.needNewPlatform()) {
                     var tint = this.pickPlatformColor();
                     this.addPlatform(this.platformGroup, tint, true);
@@ -81,20 +83,22 @@ define(["require", "exports", "phaser-ce", "./sprites/platform", "./helpers/cons
         GameLogic.prototype.addPlatform = function (platformGroup, tint, animate) {
             if (animate === void 0) { animate = false; }
             var newPlatformX = this.lastPlatform
-                ? this.lastPlatform.target.x + this.lastPlatform.width - Math.ceil(this.lastPlatform.width * const_1.Const.Platform.Size.LockSizePerc)
+                ? this.lastPlatform.target.x + this.lastPlatform.width - this.lastPlatform.width * const_1.Const.Platform.Size.LockSizePerc
                 : 0;
             var prevPlatformNumber = (this.lastPlatform && this.lastPlatform.number) || 0;
-            this.lastPlatform = platformGroup.add(this.game.add.existing(new platform_1.default(this.game, newPlatformX, platformGroup, prevPlatformNumber + 1, tint, animate)));
+            var platform = platformGroup.add(this.game.add.existing(new platform_1.default(this.game, newPlatformX, platformGroup, prevPlatformNumber + 1, tint, animate)));
+            this.lastPlatform = platform;
+            this.platforms.push(platform.platform);
         };
         GameLogic.prototype.pickPlatformColor = function () {
             if (this.phaseState !== PhaseState.Play) {
-                return const_1.Const.Color.DefaultTint;
+                return const_1.Const.Color.DefaultPlatformTint;
             }
-            else if (this.lastPlatform.tint != const_1.Const.Color.DefaultTint) {
+            else if (this.lastPlatform.tint != const_1.Const.Color.DefaultPlatformTint) {
                 return this.game.rnd.pick(this.colors);
             }
             else {
-                return this.game.rnd.pick(this.colors.filter(function (color) { return color != const_1.Const.Color.DefaultTint; }));
+                return this.game.rnd.pick(this.colors.filter(function (color) { return color != const_1.Const.Color.DefaultPlatformTint; }));
             }
         };
         GameLogic.prototype.resize = function (forcedResize) {
@@ -125,6 +129,7 @@ define(["require", "exports", "phaser-ce", "./sprites/platform", "./helpers/cons
             var _this = this;
             this.state.shouter.text = this.game.rnd.pick(["Nice!", "Woohoo!", "Solid!", "Incredible!", "Great!"]);
             this.state.player.onPhaseComplete();
+            this.state.joystick.onPhaseComplete();
             this.game.time.events.add(phaser_ce_1.Timer.SECOND * 2, function () {
                 _this.state.score.resetColors();
                 _this.configureNextPhase();
@@ -149,14 +154,14 @@ define(["require", "exports", "phaser-ce", "./sprites/platform", "./helpers/cons
         GameLogic.prototype.onColorComplete = function (color) {
             for (var i in this.colors) {
                 if (this.colors[i] === color) {
-                    this.colors[i] = const_1.Const.Color.DefaultTint;
+                    this.colors[i] = const_1.Const.Color.DefaultPlatformTint;
                 }
             }
-            return this.colors.reduce(function (others, curr) { return others && curr === const_1.Const.Color.DefaultTint; }, true);
+            return this.colors.reduce(function (others, curr) { return others && curr === const_1.Const.Color.DefaultPlatformTint; }, true);
         };
         GameLogic.prototype.allPlatformsComplete = function () {
             return this.platformGroup.children.reduce(function (others, curr) {
-                return others && (curr.missed || curr.matched || curr.tint == const_1.Const.Color.DefaultTint);
+                return others && (curr.missed || curr.matched || curr.tint == const_1.Const.Color.DefaultPlatformTint);
             }, true);
         };
         Object.defineProperty(GameLogic.prototype, "hasLost", {
@@ -180,6 +185,17 @@ define(["require", "exports", "phaser-ce", "./sprites/platform", "./helpers/cons
             enumerable: true,
             configurable: true
         });
+        GameLogic.prototype.testExplode = function () {
+            var _this = this;
+            var p = this.p = new platform_1.default(this.game, 100);
+            p.y = 100;
+            p.scale.setTo(2);
+            p.platform.tint = const_1.Const.Color.StartColors[0];
+            //this.game.time.events.add(1000, () => ColorExploder.Instance(this.game).explode(p.platform, p.tint));
+            this.game.time.events.repeat(1500, 1000, function () {
+                color_exploder_1.default.Instance(_this.game).explode(p.platform, p.tint);
+            });
+        };
         return GameLogic;
     }());
     exports.default = GameLogic;

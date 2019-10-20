@@ -38,7 +38,7 @@ define(["require", "exports"], function (require, exports) {
         (function (States) {
             States["Boot"] = "Boot";
             States["Preloader"] = "Preloader";
-            States["Menu"] = "Menu";
+            States["MainMenu"] = "Menu";
             States["Game"] = "Game";
         })(States = Const.States || (Const.States = {}));
         ;
@@ -50,15 +50,20 @@ define(["require", "exports"], function (require, exports) {
         (function (Images) {
             Images.Player = { name: "player", file: "player/player.png", frameFile: "player/player.json" };
             Images.Platform = { name: "platform", file: "platform.gif" };
+            Images.PlatformGlow = { name: "platform-glow", file: "platform-glow.png" };
             Images.GameBackground = { name: "game-bg", file: "backgrounds/space-scene_01.jpg" };
-            Images.Joystick = { name: "joystick", file: "joystick/joystick.png" };
+            Images.MainMenuBackground = { name: "main-menu-bg", file: "backgrounds/main-menu.jpg" };
+            Images.Joystick = { name: "joystick", file: "joystick/joystick_white.png" };
+            Images.ColorExplosion = { name: "color-explosion", file: "color-explosion.png" };
         })(Images = Const.Images || (Const.Images = {}));
         var Color;
         (function (Color) {
-            Color.StartColors = [0xFD5308, 0x66B032, 0x0391CD]; //, 0x800080];//, 0xFFFF00];
-            Color.FutureColors = [0x800080, 0xFFFF00];
+            //export const StartColors = [0xFD5308, 0x66B032, 0x0391CD];//, 0x800080];//, 0xFFFF00];
+            Color.StartColors = [0xF700FE, 0x04A1D8, 0xFAFF29]; //, 0x800080];//, 0xFFFF00];
+            Color.FutureColors = [0xDA1A3B, 0x1E38A1, 0xA800F5, 0x08ff56];
             Color.ChangeSpeed = 20;
-            Color.DefaultTint = 0x333333;
+            Color.DefaultPlatformTint = 0x333333;
+            Color.DefaultPlayerTint = 0xFFFFFF;
         })(Color = Const.Color || (Const.Color = {}));
         var Score;
         (function (Score) {
@@ -71,13 +76,13 @@ define(["require", "exports"], function (require, exports) {
         var Platform;
         (function (Platform) {
             Platform.StartPlatforms = [
-                null, null, null //, null
-            ];
+                null, null, null //, Color.StartColors[6]//, null, 
+            ]; //.concat(...Color.StartColors).concat(...Color.FutureColors);
             var Size;
             (function (Size) {
                 Size.Width = 103;
                 Size.Height = 15;
-                Size.LockSize = 4;
+                Size.LockSize = 3;
                 Size.LockSizePerc = Size.LockSize / Size.Width;
             })(Size = Platform.Size || (Platform.Size = {}));
             Platform.StartX = -.5 * Size.Width;
@@ -122,7 +127,7 @@ define(["require", "exports"], function (require, exports) {
         (function (Audio) {
             Audio.Formats = ["m4a", "mp3"];
             Audio.Songs = [
-                { state: States.Menu, file: "bensound-endlessmotion" },
+                { state: States.MainMenu, file: "bensound-endlessmotion" },
                 { state: States.Game, file: "bensound-dubstep" },
                 { state: States.Game, file: "bensound-moose" },
                 { state: States.Game, file: "bensound-popdance" }

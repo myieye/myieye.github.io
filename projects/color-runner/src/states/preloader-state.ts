@@ -6,6 +6,7 @@ export default class PreloaderState extends State {
 
 	preload() {
 		this.loadImages();
+		this.game.load.bitmapFont("tricolor", "./font/tricolor.png", "./font/tricolor.fnt");
 		SoundHelper.Instance.init(this.game);
 	}
 

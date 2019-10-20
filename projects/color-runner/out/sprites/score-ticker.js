@@ -19,7 +19,8 @@ define(["require", "exports", "phaser-ce"], function (require, exports, phaser_c
         function ScoreTicker(game, width, height) {
             var _this = _super.call(this, game) || this;
             _this.score = 0;
-            var text = _this.text = game.add.text(0, 0, _this.score.toString(), { font: "bold 25px Arial", fill: "#fff", boundsAlignH: "right", boundsAlignV: "middle" });
+            var text = _this.text = game.add.text(0, 0, _this.score.toString(), { font: "bold 35px tricolor-bw", fill: "#fff", boundsAlignH: "right", boundsAlignV: "middle",
+                stroke: "#000", strokeThickness: 6 });
             //text.setShadow(3, 3, 'rgba(0,0,0,0.5)', 2);
             text.setTextBounds(0, 0, width - 10, height + 10);
             _this.add(text);

@@ -29,7 +29,7 @@ class PhaseSpeed {
 
 export namespace Const {
 
-    export enum States { Boot = "Boot", Preloader = "Preloader", Menu = "Menu", Game = "Game" };
+    export enum States { Boot = "Boot", Preloader = "Preloader", MainMenu = "Menu", Game = "Game" };
 
     export namespace Game {
         export const Life = 3;
@@ -38,15 +38,20 @@ export namespace Const {
     export namespace Images {
         export const Player: Image = { name: "player", file: "player/player.png", frameFile: "player/player.json" };
         export const Platform: Image = { name: "platform", file: "platform.gif" };
+        export const PlatformGlow: Image = { name: "platform-glow", file: "platform-glow.png" };
         export const GameBackground: Image = { name: "game-bg", file: "backgrounds/space-scene_01.jpg" };
-        export const Joystick: Image = { name: "joystick", file: "joystick/joystick.png" }; 
+        export const MainMenuBackground: Image = { name: "main-menu-bg", file: "backgrounds/main-menu.jpg" };
+        export const Joystick: Image = { name: "joystick", file: "joystick/joystick_white.png" };
+        export const ColorExplosion: Image = { name: "color-explosion", file: "color-explosion.png" };
     }
 
     export namespace Color {
-        export const StartColors = [0xFD5308, 0x66B032, 0x0391CD];//, 0x800080];//, 0xFFFF00];
-        export const FutureColors = [0x800080, 0xFFFF00];
+        //export const StartColors = [0xFD5308, 0x66B032, 0x0391CD];//, 0x800080];//, 0xFFFF00];
+        export const StartColors = [0xF700FE, 0x04A1D8, 0xFAFF29];//, 0x800080];//, 0xFFFF00];
+        export const FutureColors = [0xDA1A3B, 0x1E38A1, 0xA800F5, 0x08ff56];
         export const ChangeSpeed = 20;
-        export const DefaultTint = 0x333333;
+        export const DefaultPlatformTint = 0x333333;
+        export const DefaultPlayerTint = 0xFFFFFF;
     }
 
     export namespace Score {
@@ -59,13 +64,13 @@ export namespace Const {
 
     export namespace Platform {
         export const StartPlatforms = [
-            null, null, null//, null
-        ];
+            null, null, null//, Color.StartColors[6]//, null, 
+        ];//.concat(...Color.StartColors).concat(...Color.FutureColors);
 
         export namespace Size {
             export const Width = 103;
             export const Height = 15;
-            export const LockSize = 4;
+            export const LockSize = 3;
             export const LockSizePerc = LockSize / Width;
         }
 
@@ -111,7 +116,7 @@ export namespace Const {
 
         export const Formats = ["m4a", "mp3"];
         export const Songs: Song[] = [
-            { state: States.Menu, file: "bensound-endlessmotion" },
+            { state: States.MainMenu, file: "bensound-endlessmotion" },
             { state: States.Game, file: "bensound-dubstep" },
             { state: States.Game, file: "bensound-moose" },
             { state: States.Game, file: "bensound-popdance" }

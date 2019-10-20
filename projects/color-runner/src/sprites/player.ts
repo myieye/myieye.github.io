@@ -1,6 +1,7 @@
 import { Sprite, Game, Physics, Animation, Color, Timer } from 'phaser-ce';
 import GameState from "../states/game-state";
 import { Const } from "../helpers/const";
+import Platform from './platform';
 
 export default class Player extends Sprite {
 
@@ -11,7 +12,7 @@ export default class Player extends Sprite {
     private currColorStep:number;
     private numColorSteps = 20;
 
-    private currPlatforms = [];
+    private currPlatforms:Platform[] = [];
 
     private targetTint: number;
 
@@ -67,12 +68,12 @@ export default class Player extends Sprite {
             }
         }
 
-        let onPlatforms = this.game.physics.arcade.collide(this, this.gameState.platformGroup);
+        let onPlatforms = this.game.physics.arcade.collide(this, this.gameState.gameLogic.platforms);
 
         this.checkForMissedPlatform();
         this.currPlatforms = [];
         this.game.physics.arcade.overlap(
-            this.collider, this.gameState.platformGroup,
+            this.collider, this.gameState.gameLogic.platforms,
             this.onPlatformCollision, null, this);
             
         if (this.is("stand") && onPlatforms) {
@@ -90,7 +91,7 @@ export default class Player extends Sprite {
 
     onChangeSpeed(newSpeed) {
         if (this.is("run")) {
-            this.animations.currentAnim.speed = newSpeed * 10;
+            this.animations.currentAnim.speed = newSpeed * 7;
         }
     }
 
@@ -104,7 +105,8 @@ export default class Player extends Sprite {
     }
 
     run() {
-        this.animations.play("run").speed = this.gameState.gameLogic.currSpeed * 10;
+        this.animations.play("run");
+        this.onChangeSpeed(this.gameState.gameLogic.currSpeed);
         this.animations.currentAnim.setFrame(12, true);
         this.body.allowGravity = true;
     }
@@ -131,7 +133,7 @@ export default class Player extends Sprite {
 
     onPhaseComplete() {
         this.game.time.events.add(Timer.SECOND * 1, () => {
-            this.setColor(0xffffff);
+            this.setColor(Const.Color.DefaultPlayerTint);
             this.jump();
         });
     }
@@ -141,15 +143,18 @@ export default class Player extends Sprite {
             (frame === undefined || frame === this.currFrame);
     }
 
-    private onPlatformCollision(_, platform) {
-        this.currPlatforms.push(platform);
+    private onPlatformCollision(_, platform:Sprite) {
+        let platformGroup = platform.parent as Platform;
+        if (platformGroup.number === 1) return;
+
+        this.currPlatforms.push(platformGroup);
 
         if (this.is("fly")) {
             this.stand();
         }
 
-        if (!platform.matched && this.platformMatches(platform)) {
-            this.gameState.gameLogic.onPlatformMatched(platform);
+        if (!platformGroup.matched && this.platformMatches(platform)) {
+            this.gameState.gameLogic.onPlatformMatched(platformGroup);
         }
     }
 

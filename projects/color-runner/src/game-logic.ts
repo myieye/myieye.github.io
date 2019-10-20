@@ -1,8 +1,9 @@
-import { Game, Group, Math as PMath, Color, Timer } from 'phaser-ce';
+import { Game, Group, Math as PMath, Color, Timer, Sprite } from 'phaser-ce';
 import Platform from './sprites/platform';
 import GameState from './states/game-state';
 import { Const, Phase } from './helpers/const';
 import SoundHelper from './helpers/sound-helper';
+import ColorExploder from './helpers/color-exploder';
 
 export enum PhaseState { Unstarted, Play, Transition, Lost }
 
@@ -13,6 +14,7 @@ export default class GameLogic {
     private platformGroup: Group;
     private soundHelper: SoundHelper;
 
+    platforms: Sprite[];
     phaseState: PhaseState;
     currLife: number;
     currSpeed: number;
@@ -30,9 +32,12 @@ export default class GameLogic {
         this.phaseState = PhaseState.Unstarted;
     }
 
+    p:Platform;
+
     initGame() {
         this.game = this.state.game;
         this.platformGroup = this.state.platformGroup;
+        this.platforms = [];
         this.soundHelper = SoundHelper.Instance;
 
         this.currNegPlatformY = this.game.height - this.platformGroup.y;
@@ -40,6 +45,8 @@ export default class GameLogic {
         for (var tint of Const.Platform.StartPlatforms) {
             this.addPlatform(this.state.platformGroup, tint);
         }
+
+        //this.testExplode();
 
         this.configureNextPhase();
     }
@@ -59,7 +66,7 @@ export default class GameLogic {
                 this.game.time.events.add(Timer.SECOND * 2, () => this.state.restart());
             }
             
-            this.platformGroup.x -= this.currSpeed * this.state.player.speed;
+            //this.platformGroup.x -= this.currSpeed * this.state.player.speed;
 
             if (this.phaseState !== PhaseState.Lost && this.lastPlatform && this.needNewPlatform()) {
                 var tint = this.pickPlatformColor();
@@ -105,23 +112,23 @@ export default class GameLogic {
 
     private addPlatform(platformGroup: Group, tint: number, animate = false) {
         var newPlatformX = this.lastPlatform
-            ? this.lastPlatform.target.x + this.lastPlatform.width - Math.ceil(this.lastPlatform.width * Const.Platform.Size.LockSizePerc)
+            ? this.lastPlatform.target.x + this.lastPlatform.width - this.lastPlatform.width * Const.Platform.Size.LockSizePerc
             : 0;
 
         var prevPlatformNumber = (this.lastPlatform && this.lastPlatform.number) || 0;
-        this.lastPlatform = platformGroup.add(this.game.add.existing(
-            new Platform(this.game,
-                newPlatformX, platformGroup,
-                prevPlatformNumber + 1, tint, animate)));
+        var platform = platformGroup.add(this.game.add.existing(
+            new Platform(this.game, newPlatformX, platformGroup, prevPlatformNumber + 1, tint, animate)));
+        this.lastPlatform = platform;
+        this.platforms.push(platform.platform);
     }
 
     pickPlatformColor(): number {
         if (this.phaseState !== PhaseState.Play) {
-            return Const.Color.DefaultTint;
-        } else if (this.lastPlatform.tint != Const.Color.DefaultTint) {
+            return Const.Color.DefaultPlatformTint;
+        } else if (this.lastPlatform.tint != Const.Color.DefaultPlatformTint) {
             return this.game.rnd.pick(this.colors);
         } else {
-            return this.game.rnd.pick(this.colors.filter((color) => color != Const.Color.DefaultTint));
+            return this.game.rnd.pick(this.colors.filter((color) => color != Const.Color.DefaultPlatformTint));
         }
     }
 
@@ -134,6 +141,7 @@ export default class GameLogic {
 
     onPlatformMissed(platform) {
         this.onPlatformComplete(platform);
+        
         this.currLife--;
         platform.parent.y += Const.Platform.Size.Height;
         this.state.player.y += Const.Platform.Size.Height;
@@ -158,6 +166,7 @@ export default class GameLogic {
     onPhaseComplete() {
         this.state.shouter.text = this.game.rnd.pick(["Nice!", "Woohoo!", "Solid!", "Incredible!", "Great!"]);
         this.state.player.onPhaseComplete();
+        this.state.joystick.onPhaseComplete();
         this.game.time.events.add(Timer.SECOND * 2, () => {
             this.state.score.resetColors();
             this.configureNextPhase();
@@ -188,15 +197,15 @@ export default class GameLogic {
     private onColorComplete(color: number) {
         for (var i in this.colors) {
             if (this.colors[i] === color) {
-                this.colors[i] = Const.Color.DefaultTint;
+                this.colors[i] = Const.Color.DefaultPlatformTint;
             }
         }
-        return this.colors.reduce((others, curr) => others && curr === Const.Color.DefaultTint, true);
+        return this.colors.reduce((others, curr) => others && curr === Const.Color.DefaultPlatformTint, true);
     }
 
     private allPlatformsComplete(): boolean {
         return this.platformGroup.children.reduce((others, curr: Platform) =>
-            others && (curr.missed || curr.matched || curr.tint == Const.Color.DefaultTint), true);
+            others && (curr.missed || curr.matched || curr.tint == Const.Color.DefaultPlatformTint), true);
     }
 
     get hasLost(): boolean {
@@ -209,5 +218,16 @@ export default class GameLogic {
 
     get loadSpace(): number {
         return Platform.width * 2;
+    }
+
+    testExplode() {
+        var p = this.p = new Platform(this.game, 100);
+        p.y = 100;
+        p.scale.setTo(2);
+        p.platform.tint = Const.Color.StartColors[0];
+        //this.game.time.events.add(1000, () => ColorExploder.Instance(this.game).explode(p.platform, p.tint));
+        this.game.time.events.repeat(1500, 1000, () => {
+            ColorExploder.Instance(this.game).explode(p.platform, p.tint);
+        });
     }
 }

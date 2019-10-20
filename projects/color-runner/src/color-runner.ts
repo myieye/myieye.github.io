@@ -3,6 +3,7 @@ import PreloaderState from "./states/preloader-state";
 import GameState from "./states/game-state";
 import { Const } from "./helpers/const";
 import { Game, CANVAS } from 'phaser-ce';
+import MainMenuState from './states/main-menu-state';
 
 export class ColorRunnerGame extends Game {
 
@@ -14,6 +15,7 @@ export class ColorRunnerGame extends Game {
         super("100%", "100%", CANVAS, 'game');
         this.state.add(Const.States.Boot, BootState);
         this.state.add(Const.States.Preloader, PreloaderState);
+        this.state.add(Const.States.MainMenu, MainMenuState);
         this.state.add(Const.States.Game, GameState);
     }
 

@@ -71,10 +71,10 @@ define(["require", "exports", "phaser-ce", "../helpers/const"], function (requir
                     this.tint = Phaser.Color.interpolateColor(this.tint, this.targetTint, this.numColorSteps, const_1.Const.Color.ChangeSpeed / this.numColorSteps, 0);
                 }
             }
-            var onPlatforms = this.game.physics.arcade.collide(this, this.gameState.platformGroup);
+            var onPlatforms = this.game.physics.arcade.collide(this, this.gameState.gameLogic.platforms);
             this.checkForMissedPlatform();
             this.currPlatforms = [];
-            this.game.physics.arcade.overlap(this.collider, this.gameState.platformGroup, this.onPlatformCollision, null, this);
+            this.game.physics.arcade.overlap(this.collider, this.gameState.gameLogic.platforms, this.onPlatformCollision, null, this);
             if (this.is("stand") && onPlatforms) {
                 this.run();
             }
@@ -88,7 +88,7 @@ define(["require", "exports", "phaser-ce", "../helpers/const"], function (requir
         };
         Player.prototype.onChangeSpeed = function (newSpeed) {
             if (this.is("run")) {
-                this.animations.currentAnim.speed = newSpeed * 10;
+                this.animations.currentAnim.speed = newSpeed * 7;
             }
         };
         Player.prototype.setColor = function (color) {
@@ -99,7 +99,8 @@ define(["require", "exports", "phaser-ce", "../helpers/const"], function (requir
             return this.tint;
         };
         Player.prototype.run = function () {
-            this.animations.play("run").speed = this.gameState.gameLogic.currSpeed * 10;
+            this.animations.play("run");
+            this.onChangeSpeed(this.gameState.gameLogic.currSpeed);
             this.animations.currentAnim.setFrame(12, true);
             this.body.allowGravity = true;
         };
@@ -123,7 +124,7 @@ define(["require", "exports", "phaser-ce", "../helpers/const"], function (requir
         Player.prototype.onPhaseComplete = function () {
             var _this = this;
             this.game.time.events.add(phaser_ce_1.Timer.SECOND * 1, function () {
-                _this.setColor(0xffffff);
+                _this.setColor(const_1.Const.Color.DefaultPlayerTint);
                 _this.jump();
             });
         };
@@ -132,12 +133,15 @@ define(["require", "exports", "phaser-ce", "../helpers/const"], function (requir
                 (frame === undefined || frame === this.currFrame);
         };
         Player.prototype.onPlatformCollision = function (_, platform) {
-            this.currPlatforms.push(platform);
+            var platformGroup = platform.parent;
+            if (platformGroup.number === 1)
+                return;
+            this.currPlatforms.push(platformGroup);
             if (this.is("fly")) {
                 this.stand();
             }
-            if (!platform.matched && this.platformMatches(platform)) {
-                this.gameState.gameLogic.onPlatformMatched(platform);
+            if (!platformGroup.matched && this.platformMatches(platform)) {
+                this.gameState.gameLogic.onPlatformMatched(platformGroup);
             }
         };
         Player.prototype.platformMatches = function (platform) {
