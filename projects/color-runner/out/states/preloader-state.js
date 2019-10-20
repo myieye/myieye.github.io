@@ -25,7 +25,7 @@ define(["require", "exports", "phaser-ce", "../helpers/sound-helper", "../helper
             sound_helper_1.default.Instance.init(this.game);
         };
         PreloaderState.prototype.create = function () {
-            this.game.state.start(const_1.Const.States.Game, true, false);
+            this.game.state.start(const_1.Const.States.MainMenu, true, false);
         };
         PreloaderState.prototype.loadImages = function () {
             for (var _i = 0, _a = Object.keys(const_1.Const.Images); _i < _a.length; _i++) {
