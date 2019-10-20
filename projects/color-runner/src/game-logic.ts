@@ -66,7 +66,7 @@ export default class GameLogic {
                 this.game.time.events.add(Timer.SECOND * 2, () => this.state.restart());
             }
             
-            //this.platformGroup.x -= this.currSpeed * this.state.player.speed;
+            this.platformGroup.x -= this.currSpeed * this.state.player.speed;
 
             if (this.phaseState !== PhaseState.Lost && this.lastPlatform && this.needNewPlatform()) {
                 var tint = this.pickPlatformColor();

@@ -82,7 +82,7 @@ export default class Platform extends Group {
     onMatched() {
         this.matched = true;
         if (this.glow) {
-            ColorExploder.Instance(this.game).explode(this.platform, this.tint);
+            //ColorExploder.Instance(this.game).explode(this.platform, this.tint);
             this.game.add.tween(this.glow)
                 .to({ width: this.glow.width * .3, height: 0 },
                     500, Easing.Elastic.In, true)

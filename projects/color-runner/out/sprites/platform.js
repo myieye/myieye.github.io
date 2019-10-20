@@ -11,7 +11,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "phaser-ce", "../helpers/const", "../helpers/color-exploder"], function (require, exports, phaser_ce_1, const_1, color_exploder_1) {
+define(["require", "exports", "phaser-ce", "../helpers/const"], function (require, exports, phaser_ce_1, const_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var Platform = /** @class */ (function (_super) {
@@ -77,7 +77,7 @@ define(["require", "exports", "phaser-ce", "../helpers/const", "../helpers/color
             var _this = this;
             this.matched = true;
             if (this.glow) {
-                color_exploder_1.default.Instance(this.game).explode(this.platform, this.tint);
+                //ColorExploder.Instance(this.game).explode(this.platform, this.tint);
                 this.game.add.tween(this.glow)
                     .to({ width: this.glow.width * .3, height: 0 }, 500, phaser_ce_1.Easing.Elastic.In, true)
                     .onComplete.addOnce(function () { return _this.platform.tint = const_1.Const.Color.DefaultPlatformTint; });

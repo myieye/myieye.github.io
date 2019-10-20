@@ -42,7 +42,7 @@ define(["require", "exports", "phaser-ce", "./sprites/platform", "./helpers/cons
                     this.phaseState = PhaseState.Lost;
                     this.game.time.events.add(phaser_ce_1.Timer.SECOND * 2, function () { return _this.state.restart(); });
                 }
-                //this.platformGroup.x -= this.currSpeed * this.state.player.speed;
+                this.platformGroup.x -= this.currSpeed * this.state.player.speed;
                 if (this.phaseState !== PhaseState.Lost && this.lastPlatform && this.needNewPlatform()) {
                     var tint = this.pickPlatformColor();
                     this.addPlatform(this.platformGroup, tint, true);
