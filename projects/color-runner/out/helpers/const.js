@@ -102,6 +102,7 @@ define(["require", "exports"], function (require, exports) {
             Joystick.Diameter = 140;
             Joystick.Padding = 30;
             Joystick.PinDiameterPercent = .45;
+            Joystick.DefaultBorderColor = 0xEFEFEF;
         })(Joystick = Const.Joystick || (Const.Joystick = {}));
         var Player;
         (function (Player) {

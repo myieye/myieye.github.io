@@ -92,6 +92,7 @@ export namespace Const {
         export const Diameter = 140;
         export const Padding = 30;
         export const PinDiameterPercent = .45;
+        export const DefaultBorderColor = 0xEFEFEF;
     }
 
     export namespace Player {

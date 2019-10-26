@@ -27,7 +27,7 @@ export default class ColorJoystick extends Group {
 
         // BORDER
         var border = this.border = this.wheel.add(game.add.graphics());
-        border.lineStyle(10, 0xEFEFEF);
+        border.lineStyle(10, Const.Joystick.DefaultBorderColor);
         border.arc(0, 0, Const.Joystick.Diameter / 2, -0.5, PMath.PI2, false);
 
         // COLOR PIE ----------------------------------------------
@@ -178,6 +178,7 @@ export default class ColorJoystick extends Group {
 
     onPhaseComplete() {
         this.currColor = Const.Color.DefaultPlayerTint;
+        this.border.tint = Const.Joystick.DefaultBorderColor;
     }
 
     private get radius(): number {
