@@ -25,10 +25,13 @@ export default class GameState extends State {
 	MinWidth: number;
 	MinHeight: number;
 
-	firstUpdate = true;
-	gameStarted = false;
+	firstUpdate;
+	gameStarted;
 
 	init() {
+		this.firstUpdate = true;
+		this.gameStarted = false;
+
 		this.gameLogic = new GameLogic(this);
 		this.MinWidth = Const.Player.StartX + Const.Player.Size.Width +
 			this.gameLogic.loadBuffer + this.gameLogic.loadSpace + Const.Platform.Animation.LockDist;

@@ -17,12 +17,11 @@ define(["require", "exports", "phaser-ce", "../game-logic", "../sprites/player",
     var GameState = /** @class */ (function (_super) {
         __extends(GameState, _super);
         function GameState() {
-            var _this = _super !== null && _super.apply(this, arguments) || this;
-            _this.firstUpdate = true;
-            _this.gameStarted = false;
-            return _this;
+            return _super !== null && _super.apply(this, arguments) || this;
         }
         GameState.prototype.init = function () {
+            this.firstUpdate = true;
+            this.gameStarted = false;
             this.gameLogic = new game_logic_1.default(this);
             this.MinWidth = const_1.Const.Player.StartX + const_1.Const.Player.Size.Width +
                 this.gameLogic.loadBuffer + this.gameLogic.loadSpace + const_1.Const.Platform.Animation.LockDist;
