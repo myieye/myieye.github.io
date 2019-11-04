@@ -34,6 +34,10 @@ define(["require", "exports"], function (require, exports) {
     }());
     var Const;
     (function (Const) {
+        var Config;
+        (function (Config) {
+            Config.Dev = true;
+        })(Config = Const.Config || (Const.Config = {}));
         var States;
         (function (States) {
             States["Boot"] = "Boot";
@@ -51,7 +55,13 @@ define(["require", "exports"], function (require, exports) {
             Images.Player = { name: "player", file: "player/player.png", frameFile: "player/player.json" };
             Images.Platform = { name: "platform", file: "platform.gif" };
             Images.PlatformGlow = { name: "platform-glow", file: "platform-glow.png" };
-            Images.GameBackground = { name: "game-bg", file: "backgrounds/space-scene_01.jpg" };
+            Images.GameBackground_1 = { name: "game-bg-1", file: "backgrounds/space-scene_01.jpg" };
+            Images.GameBackground_2 = { name: "game-bg-2", file: "backgrounds/space-scene_02.jpg" };
+            Images.GameBackground_3 = { name: "game-bg-3", file: "backgrounds/space-scene_03.jpg" };
+            Images.GameBackground_4 = { name: "game-bg-4", file: "backgrounds/space-scene_04.jpg" };
+            Images.GameBackground_5 = { name: "game-bg-5", file: "backgrounds/space-scene_05.jpg" };
+            Images.GameBackground_6 = { name: "game-bg-6", file: "backgrounds/space-scene_06.jpg" };
+            Images.GameBackground_7 = { name: "game-bg-7", file: "backgrounds/space-scene_07.jpg" };
             Images.MainMenuBackground = { name: "main-menu-bg", file: "backgrounds/main-menu.jpg" };
             Images.Joystick = { name: "joystick", file: "joystick/joystick_white.png" };
             Images.ColorExplosion = { name: "color-explosion", file: "color-explosion.png" };
@@ -122,7 +132,7 @@ define(["require", "exports"], function (require, exports) {
                 Audio.Songs = Base + "songs/";
                 Audio.Sounds = Base + "effects/";
             })(Audio = Path.Audio || (Path.Audio = {}));
-            Path.Image = "./img/";
+            Path.Image = "./assets/img/";
         })(Path = Const.Path || (Const.Path = {}));
         var Audio;
         (function (Audio) {

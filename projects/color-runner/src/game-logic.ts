@@ -140,6 +140,7 @@ export default class GameLogic {
     }
 
     onPlatformMissed(platform) {
+        return;
         this.onPlatformComplete(platform);
         
         this.currLife--;

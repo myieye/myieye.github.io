@@ -23,7 +23,7 @@ define(["require", "exports", "phaser-ce", "./menu", "./menu-item", "../helpers/
             _this.background
                 .beginFill(phaser_ce_1.Color.BLACK, .6)
                 .drawRect(0, 0, game.width, game.height);
-            _this.add(_this.game.add.existing(new menu_1.default(game, .4, .2, new menu_item_1.default(game, "Main Menu", function () {
+            _this.add(_this.game.add.existing(new menu_1.default(game, .3, .4, new menu_item_1.default(game, "Main Menu", function () {
                 game.paused = false;
                 game.state.start(const_1.Const.States.MainMenu);
             }), new menu_item_1.default(game, "Resume", function () {

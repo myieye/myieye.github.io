@@ -21,11 +21,8 @@ define(["require", "exports", "phaser-ce", "../helpers/sound-helper", "../helper
         }
         PreloaderState.prototype.preload = function () {
             this.loadImages();
-            this.game.load.bitmapFont("tricolor", "./font/tricolor.png", "./font/tricolor.fnt");
+            this.game.load.bitmapFont("tricolor", "./assets/font/tricolor.png", "./assets/font/tricolor.fnt");
             sound_helper_1.default.Instance.init(this.game);
-        };
-        PreloaderState.prototype.create = function () {
-            this.game.state.start(const_1.Const.States.MainMenu, true, false);
         };
         PreloaderState.prototype.loadImages = function () {
             for (var _i = 0, _a = Object.keys(const_1.Const.Images); _i < _a.length; _i++) {
@@ -38,6 +35,9 @@ define(["require", "exports", "phaser-ce", "../helpers/sound-helper", "../helper
                     this.load.image(img.name, const_1.Const.Path.Image + img.file);
                 }
             }
+        };
+        PreloaderState.prototype.create = function () {
+            this.game.state.start(const_1.Const.States.Game, true, false);
         };
         return PreloaderState;
     }(phaser_ce_1.State));

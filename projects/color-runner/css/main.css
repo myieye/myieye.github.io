@@ -1,0 +1,72 @@
+canvas {
+    position: fixed;
+}
+
+body {
+    margin: 0;
+    background: #2B2E30 url(img/screen-bg.png) repeat;
+}
+
+.credits-container {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    overflow: auto;
+    z-index: 5;
+    display: none;
+}
+
+.credits-bg {
+    height: 100%;
+    width: 100%;
+    background: #222222;
+    opacity: .98;
+    position: fixed;
+}
+
+.credits {
+    text-align: center;
+    color: white;
+    padding: 30px;
+    position: relative;
+}
+
+.credit-title {
+    font-family: 'tricolor-bw';
+    font-size: 2em;
+    margin-top: 15px;
+    color: #FAFF29;
+}
+
+.credit-item {
+    margin-top: 13px;
+    font-family: 'arial';
+}
+
+.credit-item b {
+    color: #04A1D8;
+    font-weight: bold;
+}
+
+.credit-item a,
+.credit-item a:visited,
+.credit-item a:hover,
+.credit-item a:active {
+    font-weight: 300;
+    color: #F700FE;
+    text-decoration: none;
+    border: 1px solid #F700FE;
+    border-radius: 5px;
+    padding: 3px 5px;
+}
+
+.close-credits {
+    position: fixed;
+    top: 5px;
+    right: 20px;
+    font-size: 4em;
+    font-family: tricolor-bw;
+    color: white;
+    z-index: 5;
+    cursor: pointer;
+}

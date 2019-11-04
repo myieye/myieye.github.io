@@ -108,6 +108,7 @@ define(["require", "exports", "phaser-ce", "./sprites/platform", "./helpers/cons
             }
         };
         GameLogic.prototype.onPlatformMissed = function (platform) {
+            return;
             this.onPlatformComplete(platform);
             this.currLife--;
             platform.parent.y += const_1.Const.Platform.Size.Height;

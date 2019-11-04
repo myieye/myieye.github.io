@@ -27,8 +27,17 @@ define(["require", "exports", "phaser-ce", "../game-logic", "../sprites/player",
                 this.gameLogic.loadBuffer + this.gameLogic.loadSpace + const_1.Const.Platform.Animation.LockDist;
             this.MinHeight = const_1.Const.Score.Height + const_1.Const.Player.Size.Height + const_1.Const.Player.StartVerticalPadding * 2 +
                 const_1.Const.Platform.Size.Height * (const_1.Const.Game.Life + 1);
-            this.bg = this.add.sprite(0, 0, 'game-bg');
+            this.bg = this.add.sprite(0, 0, 'game-bg-1');
             this.bg.anchor.setTo(.5, .5);
+            /*
+            var i = 1;
+            var num = 7;
+            setInterval(() => {
+                var next = (i % 7) + 1;
+                this.bg.loadTexture('game-bg-' + next);
+                i++;
+            }, 2000);
+            */
             //this.game.scale.startFullScreen(false);
             //this.bg.fixedToCamera = true;
         };

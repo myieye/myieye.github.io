@@ -24,11 +24,12 @@ define(["require", "exports", "phaser-ce", "../helpers/const"], function (requir
             var _this = _super.call(this, game) || this;
             _this.startPer = startPer;
             _this.sizePer = sizePer;
+            _this.menuItems = menuItems;
             _this.addMultiple(menuItems);
             _this.resize();
             var itemX = menuItems[0];
             var spacePerItem = ((_this.game.height * sizePer) - itemX.height) / menuItems.length;
-            spacePerItem = Math.max(Math.min(itemX.height * 2, spacePerItem), itemX.height * 1.5);
+            spacePerItem = Math.max(Math.min(itemX.height * 2, spacePerItem), itemX.height * 1.1);
             var startY = itemX.height / 2;
             menuItems.forEach(function (item, i) {
                 item.setColor(const_1.Const.Color.StartColors[i]);
@@ -37,9 +38,20 @@ define(["require", "exports", "phaser-ce", "../helpers/const"], function (requir
             _this.resize();
             return _this;
         }
+        Menu.prototype.setEnabled = function (enabled) {
+            if (enabled === void 0) { enabled = true; }
+            for (var _i = 0, _a = this.menuItems; _i < _a.length; _i++) {
+                var menuItem = _a[_i];
+                menuItem.setEnabled(enabled);
+            }
+        };
         Menu.prototype.resize = function () {
             this.game.scale.scaleSprite(this, this.game.width * .5, this.game.height * this.sizePer, true);
             this.position.setTo(this.game.world.centerX, this.game.height * this.startPer);
+            for (var _i = 0, _a = this.menuItems; _i < _a.length; _i++) {
+                var item = _a[_i];
+                //item.resize();
+            }
         };
         return Menu;
     }(phaser_ce_1.Group));

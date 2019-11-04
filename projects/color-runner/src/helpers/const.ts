@@ -29,6 +29,10 @@ class PhaseSpeed {
 
 export namespace Const {
 
+    export namespace Config {
+        export const Dev = true;
+    }
+
     export enum States { Boot = "Boot", Preloader = "Preloader", MainMenu = "Menu", Game = "Game" };
 
     export namespace Game {
@@ -39,7 +43,13 @@ export namespace Const {
         export const Player: Image = { name: "player", file: "player/player.png", frameFile: "player/player.json" };
         export const Platform: Image = { name: "platform", file: "platform.gif" };
         export const PlatformGlow: Image = { name: "platform-glow", file: "platform-glow.png" };
-        export const GameBackground: Image = { name: "game-bg", file: "backgrounds/space-scene_01.jpg" };
+        export const GameBackground_1: Image = { name: "game-bg-1", file: "backgrounds/space-scene_01.jpg" };
+        export const GameBackground_2: Image = { name: "game-bg-2", file: "backgrounds/space-scene_02.jpg" };
+        export const GameBackground_3: Image = { name: "game-bg-3", file: "backgrounds/space-scene_03.jpg" };
+        export const GameBackground_4: Image = { name: "game-bg-4", file: "backgrounds/space-scene_04.jpg" };
+        export const GameBackground_5: Image = { name: "game-bg-5", file: "backgrounds/space-scene_05.jpg" };
+        export const GameBackground_6: Image = { name: "game-bg-6", file: "backgrounds/space-scene_06.jpg" };
+        export const GameBackground_7: Image = { name: "game-bg-7", file: "backgrounds/space-scene_07.jpg" };
         export const MainMenuBackground: Image = { name: "main-menu-bg", file: "backgrounds/main-menu.jpg" };
         export const Joystick: Image = { name: "joystick", file: "joystick/joystick_white.png" };
         export const ColorExplosion: Image = { name: "color-explosion", file: "color-explosion.png" };
@@ -110,7 +120,7 @@ export namespace Const {
             export const Songs = Base + "songs/";
             export const Sounds = Base + "effects/";
         }
-        export const Image = "./img/";
+        export const Image = "./assets/img/";
     }
 
     export namespace Audio {

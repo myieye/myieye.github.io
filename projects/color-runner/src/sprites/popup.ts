@@ -17,7 +17,7 @@ export default class Popup extends Group {
             .drawRect(0, 0, game.width, game.height);
 
         this.add(this.game.add.existing(new Menu(
-            game, .4, .2, 
+            game, .3, .4, 
             new MenuItem(game, "Main Menu", () => {
                 game.paused = false;
                 game.state.start(Const.States.MainMenu);

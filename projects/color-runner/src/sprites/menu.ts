@@ -6,11 +6,13 @@ export default class Menu extends Group {
 
     private startPer: number;
     private sizePer: number;
+    private menuItems: MenuItem[];
 
     constructor(game: Game, startPer: number, sizePer: number, ...menuItems: MenuItem[]) {
         super(game);
         this.startPer = startPer;
         this.sizePer = sizePer;
+        this.menuItems = menuItems;
 
         this.addMultiple(menuItems);
 
@@ -18,7 +20,7 @@ export default class Menu extends Group {
 
         var itemX = menuItems[0];
         var spacePerItem = ((this.game.height * sizePer) - itemX.height) / menuItems.length;
-        spacePerItem = Math.max(Math.min(itemX.height * 2, spacePerItem), itemX.height * 1.5);
+        spacePerItem = Math.max(Math.min(itemX.height * 2, spacePerItem), itemX.height * 1.1);
         var startY = itemX.height / 2;
 
         menuItems.forEach((item, i) => {
@@ -29,8 +31,17 @@ export default class Menu extends Group {
         this.resize();
     }
 
+    setEnabled(enabled = true) {
+        for (var menuItem of this.menuItems) {
+            menuItem.setEnabled(enabled);
+        }
+    }
+
     resize() {
         this.game.scale.scaleSprite(this as any, this.game.width * .5, this.game.height * this.sizePer, true);
         this.position.setTo(this.game.world.centerX, this.game.height * this.startPer);
+        for (var item of this.menuItems) {
+            //item.resize();
+        }
     }
 }

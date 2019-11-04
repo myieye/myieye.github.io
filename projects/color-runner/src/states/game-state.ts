@@ -38,8 +38,19 @@ export default class GameState extends State {
 		this.MinHeight = Const.Score.Height + Const.Player.Size.Height + Const.Player.StartVerticalPadding * 2 +
 			Const.Platform.Size.Height * (Const.Game.Life + 1);
 
-		this.bg = this.add.sprite(0, 0, 'game-bg');
+		this.bg = this.add.sprite(0, 0, 'game-bg-1');
 		this.bg.anchor.setTo(.5, .5);
+
+		/*
+		var i = 1;
+		var num = 7;
+		setInterval(() => {
+			var next = (i % 7) + 1;
+			this.bg.loadTexture('game-bg-' + next);
+			i++;
+		}, 2000);
+		*/
+
 		//this.game.scale.startFullScreen(false);
 		//this.bg.fixedToCamera = true;
 	}

@@ -21,6 +21,7 @@ define(["require", "exports", "phaser-ce", "../helpers/const"], function (requir
             _this.inputEnableChildren = true;
             _this.onChildInputOver.add(_this.onInputOver, _this);
             _this.onChildInputOut.add(_this.onInputOut, _this);
+            _this.onChildInputDown.add(_this.onInputOut, _this);
             if (callback)
                 _this.onChildInputDown.add(callback);
             _this.platform = _this.add(game.add.sprite(0, 0, const_1.Const.Images.Platform.name));
@@ -31,8 +32,12 @@ define(["require", "exports", "phaser-ce", "../helpers/const"], function (requir
                 font: "tricolor-bw", fontSize: _this.platform.height, fill: "#000"
             }));
             _this.text.anchor.setTo(.5);
+            _this.resize();
             return _this;
         }
+        MenuItem.prototype.resize = function () {
+            this.game.scale.scaleSprite(this.platform, this.game.width * .3, this.game.height * .4, true);
+        };
         MenuItem.prototype.setColor = function (tint) {
             this.color = this.platform.tint = tint;
         };
@@ -43,6 +48,11 @@ define(["require", "exports", "phaser-ce", "../helpers/const"], function (requir
         MenuItem.prototype.onInputOut = function () {
             this.platform.tint = this.color;
             this.text.addColor("#000000", 0);
+        };
+        MenuItem.prototype.setEnabled = function (enabled) {
+            if (enabled === void 0) { enabled = true; }
+            this.platform.inputEnabled = enabled;
+            this.text.inputEnabled = enabled;
         };
         return MenuItem;
     }(phaser_ce_1.Group));

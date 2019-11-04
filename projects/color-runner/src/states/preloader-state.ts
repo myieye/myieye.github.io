@@ -6,12 +6,8 @@ export default class PreloaderState extends State {
 
 	preload() {
 		this.loadImages();
-		this.game.load.bitmapFont("tricolor", "./font/tricolor.png", "./font/tricolor.fnt");
+		this.game.load.bitmapFont("tricolor", "./assets/font/tricolor.png", "./assets/font/tricolor.fnt");
 		SoundHelper.Instance.init(this.game);
-	}
-
-	create() {
-		this.game.state.start(Const.States.MainMenu, true, false);
 	}
 
 	private loadImages() {
@@ -24,5 +20,9 @@ export default class PreloaderState extends State {
 				this.load.image(img.name, Const.Path.Image + img.file);
 			}
 		}
+	}
+
+	create() {
+		this.game.state.start(Const.States.Game, true, false);
 	}
 }

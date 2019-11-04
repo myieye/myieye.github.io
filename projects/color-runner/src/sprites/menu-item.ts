@@ -13,6 +13,7 @@ export default class MenuItem extends Group {
         this.inputEnableChildren = true;
         this.onChildInputOver.add(this.onInputOver, this);
         this.onChildInputOut.add(this.onInputOut, this);
+        this.onChildInputDown.add(this.onInputOut, this);
         if (callback) this.onChildInputDown.add(callback);
 
         this.platform = this.add(game.add.sprite(0, 0, Const.Images.Platform.name));
@@ -24,6 +25,11 @@ export default class MenuItem extends Group {
             font: "tricolor-bw", fontSize: this.platform.height, fill: "#000"
         }));
         this.text.anchor.setTo(.5);
+        this.resize();
+    }
+
+    resize() {
+        this.game.scale.scaleSprite(this.platform, this.game.width * .3, this.game.height * .4, true);
     }
 
     setColor(tint: number) {
@@ -38,5 +44,10 @@ export default class MenuItem extends Group {
     onInputOut() {
         this.platform.tint = this.color;
         this.text.addColor("#000000", 0);
+    }
+
+    setEnabled(enabled = true) {
+        this.platform.inputEnabled = enabled;
+        this.text.inputEnabled = enabled;
     }
 }
