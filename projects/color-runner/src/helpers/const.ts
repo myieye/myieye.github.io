@@ -30,7 +30,8 @@ class PhaseSpeed {
 export namespace Const {
 
     export namespace Config {
-        export const Dev = true;
+        export const SkipTapToStart = true;
+        export const DebugBackgrounds = false;
     }
 
     export enum States { Boot = "Boot", Preloader = "Preloader", MainMenu = "Menu", Game = "Game" };
@@ -53,6 +54,12 @@ export namespace Const {
         export const MainMenuBackground: Image = { name: "main-menu-bg", file: "backgrounds/main-menu.jpg" };
         export const Joystick: Image = { name: "joystick", file: "joystick/joystick_white.png" };
         export const ColorExplosion: Image = { name: "color-explosion", file: "color-explosion.png" };
+        export const Button: Image = { name: "button", file: "button.png" };
+        export const ButtonPressed: Image = { name: "button-pressed", file: "button-pressed.png" };
+        export const StarIcon: Image = { name: "star", file: "star.png" };
+        export const SnowflakeIcon: Image = { name: "snowflake", file: "snowflake.png" };
+        export const JumpIcon: Image = { name: "jump", file: "jump-icon.png" };
+        export const FlyIcon: Image = { name: "fly", file: "fly-icon.png" };
     }
 
     export namespace Color {

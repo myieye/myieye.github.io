@@ -43,7 +43,7 @@ define(["require", "exports", "phaser-ce", "../sprites/menu-item", "../helpers/c
             this.menu = this.game.add.existing(new menu_1.default(this.game, startPer, sizePer, new menu_item_1.default(this.game, "Start", function () { return _this.startGame(); }), new menu_item_1.default(this.game, "High scores", null), new menu_item_1.default(this.game, "Credits", function () { return _this.showCredits(); })));
             this.menu.visible = false;
             this.resize();
-            if (this.started || const_1.Const.Config.Dev) {
+            if (this.started || const_1.Const.Config.SkipTapToStart) {
                 this.start();
             }
             else {

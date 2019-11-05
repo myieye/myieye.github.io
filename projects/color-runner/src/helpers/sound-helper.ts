@@ -12,7 +12,7 @@ export default class SoundHelper {
     soundManager: SoundManager;
     currSong: Sound;
     songs: Sound[] = [];
-    sounds: Sound[] = [];
+    sounds: { [index: string]: Sound } = {};
 
     private constructor() { }
 
@@ -56,22 +56,38 @@ export default class SoundHelper {
         this.onEffect(Effect.PlatformSuccess);
     }
 
-    private onEffect(effect:Effect) {
+    private onEffect(effect: Effect) {
         var soundsForEffect = Const.Audio.Sounds.filter(sound => sound.effect == effect);
         var sound = this.game.rnd.pick(soundsForEffect);
         this.sounds[sound.file].play();
     }
 
     private onStateChange(curr: string, prev: string) {
-        this.currSong = this.chooseSongForState(curr);
+        this.startNewSong();
+    }
+
+    private startNewSong() {
+        if (this.currSong) {
+            this.currSong.onStop.removeAll();
+        }
+
+        this.currSong = this.chooseNewSongForState(this.game.state.current);
+
         if (this.currSong) {
             this.playCurrentSong();
+            this.queueNextSong();
         }
     }
 
-    private chooseSongForState(state: string): Sound {
+    private chooseNewSongForState(state: string): Sound {
         var songsForState = Const.Audio.Songs.filter(song => song.state === state);
-        var song = this.game.rnd.pick(songsForState);
+
+        let song = this.game.rnd.pick(songsForState);
+        while (song && this.currSong && songsForState.length > 1 &&
+            this.songs[song.file] == this.currSong) {
+            song = this.game.rnd.pick(songsForState);
+        }
+
         return song && this.songs[song.file];
     }
 
@@ -80,5 +96,9 @@ export default class SoundHelper {
             this.soundManager.stopAll();
             this.currSong.play();
         }
+    }
+
+    private queueNextSong() {
+        this.currSong.onStop.addOnce(() => this.startNewSong());
     }
 }

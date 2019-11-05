@@ -4,7 +4,7 @@ define(["require", "exports", "phaser-ce", "./const"], function (require, export
     var SoundHelper = /** @class */ (function () {
         function SoundHelper() {
             this.songs = [];
-            this.sounds = [];
+            this.sounds = {};
         }
         Object.defineProperty(SoundHelper, "Instance", {
             get: function () {
@@ -54,14 +54,25 @@ define(["require", "exports", "phaser-ce", "./const"], function (require, export
             this.sounds[sound.file].play();
         };
         SoundHelper.prototype.onStateChange = function (curr, prev) {
-            this.currSong = this.chooseSongForState(curr);
+            this.startNewSong();
+        };
+        SoundHelper.prototype.startNewSong = function () {
+            if (this.currSong) {
+                this.currSong.onStop.removeAll();
+            }
+            this.currSong = this.chooseNewSongForState(this.game.state.current);
             if (this.currSong) {
                 this.playCurrentSong();
+                this.queueNextSong();
             }
         };
-        SoundHelper.prototype.chooseSongForState = function (state) {
+        SoundHelper.prototype.chooseNewSongForState = function (state) {
             var songsForState = const_1.Const.Audio.Songs.filter(function (song) { return song.state === state; });
             var song = this.game.rnd.pick(songsForState);
+            while (song && this.currSong && songsForState.length > 1 &&
+                this.songs[song.file] == this.currSong) {
+                song = this.game.rnd.pick(songsForState);
+            }
             return song && this.songs[song.file];
         };
         SoundHelper.prototype.playCurrentSong = function () {
@@ -69,6 +80,10 @@ define(["require", "exports", "phaser-ce", "./const"], function (require, export
                 this.soundManager.stopAll();
                 this.currSong.play();
             }
+        };
+        SoundHelper.prototype.queueNextSong = function () {
+            var _this = this;
+            this.currSong.onStop.addOnce(function () { return _this.startNewSong(); });
         };
         return SoundHelper;
     }());

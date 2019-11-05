@@ -6,6 +6,7 @@ import { Const } from '../helpers/const';
 import ScoreKeeper from '../sprites/score-keeper';
 import Popup from '../sprites/popup';
 import PauseButton from '../sprites/pause-button';
+import ButtonGroup from "../sprites/button-group";
 
 export default class GameState extends State {
 	gameLogic: GameLogic;
@@ -21,6 +22,7 @@ export default class GameState extends State {
 	shouter: Text;
 	popup: Popup;
 	pause: PauseButton;
+	buttons: ButtonGroup;
 
 	MinWidth: number;
 	MinHeight: number;
@@ -41,7 +43,12 @@ export default class GameState extends State {
 		this.bg = this.add.sprite(0, 0, 'game-bg-1');
 		this.bg.anchor.setTo(.5, .5);
 
-		/*
+		if (Const.Config.DebugBackgrounds) {
+			this.iterateBackgrounds();
+		}
+	}
+
+	iterateBackgrounds() {
 		var i = 1;
 		var num = 7;
 		setInterval(() => {
@@ -49,10 +56,6 @@ export default class GameState extends State {
 			this.bg.loadTexture('game-bg-' + next);
 			i++;
 		}, 2000);
-		*/
-
-		//this.game.scale.startFullScreen(false);
-		//this.bg.fixedToCamera = true;
 	}
 
 	create() {
@@ -67,7 +70,10 @@ export default class GameState extends State {
 		// Color-Joystick
 		var colorJoystick = new ColorJoystick(this.game, (color) => this.onColorChanged(color));
 		this.joystick = this.ui.add(this.game.add.existing(colorJoystick));
-		this.joystick.setColors(Const.Color.StartColors);
+		this.joystick.setColors(Const.Color.StartColors.concat(Const.Color.FutureColors));
+
+		// Buttons
+		this.buttons = this.ui.add(this.game.add.existing(new ButtonGroup(this.game)));
 
 		// Score-board
 		this.score = this.ui.add(this.game.add.existing(new ScoreKeeper(this.game)));

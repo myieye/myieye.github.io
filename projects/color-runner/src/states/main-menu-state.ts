@@ -52,7 +52,7 @@ export default class MainMenuState extends State {
 
         this.resize();
 
-        if (this.started || Const.Config.Dev) {
+        if (this.started || Const.Config.SkipTapToStart) {
             this.start();
         } else {
             this.input.onDown.addOnce(() => this.start());

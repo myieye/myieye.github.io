@@ -11,7 +11,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "phaser-ce", "../game-logic", "../sprites/player", "../sprites/color-joystick", "../helpers/const", "../sprites/score-keeper", "../sprites/popup", "../sprites/pause-button"], function (require, exports, phaser_ce_1, game_logic_1, player_1, color_joystick_1, const_1, score_keeper_1, popup_1, pause_button_1) {
+define(["require", "exports", "phaser-ce", "../game-logic", "../sprites/player", "../sprites/color-joystick", "../helpers/const", "../sprites/score-keeper", "../sprites/popup", "../sprites/pause-button", "../sprites/button-group"], function (require, exports, phaser_ce_1, game_logic_1, player_1, color_joystick_1, const_1, score_keeper_1, popup_1, pause_button_1, button_group_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var GameState = /** @class */ (function (_super) {
@@ -29,17 +29,19 @@ define(["require", "exports", "phaser-ce", "../game-logic", "../sprites/player",
                 const_1.Const.Platform.Size.Height * (const_1.Const.Game.Life + 1);
             this.bg = this.add.sprite(0, 0, 'game-bg-1');
             this.bg.anchor.setTo(.5, .5);
-            /*
+            if (const_1.Const.Config.DebugBackgrounds) {
+                this.iterateBackgrounds();
+            }
+        };
+        GameState.prototype.iterateBackgrounds = function () {
+            var _this = this;
             var i = 1;
             var num = 7;
-            setInterval(() => {
+            setInterval(function () {
                 var next = (i % 7) + 1;
-                this.bg.loadTexture('game-bg-' + next);
+                _this.bg.loadTexture('game-bg-' + next);
                 i++;
             }, 2000);
-            */
-            //this.game.scale.startFullScreen(false);
-            //this.bg.fixedToCamera = true;
         };
         GameState.prototype.create = function () {
             var _this = this;
@@ -52,7 +54,9 @@ define(["require", "exports", "phaser-ce", "../game-logic", "../sprites/player",
             // Color-Joystick
             var colorJoystick = new color_joystick_1.default(this.game, function (color) { return _this.onColorChanged(color); });
             this.joystick = this.ui.add(this.game.add.existing(colorJoystick));
-            this.joystick.setColors(const_1.Const.Color.StartColors);
+            this.joystick.setColors(const_1.Const.Color.StartColors.concat(const_1.Const.Color.FutureColors));
+            // Buttons
+            this.buttons = this.ui.add(this.game.add.existing(new button_group_1.default(this.game)));
             // Score-board
             this.score = this.ui.add(this.game.add.existing(new score_keeper_1.default(this.game)));
             // Pause button

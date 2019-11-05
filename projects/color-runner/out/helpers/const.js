@@ -36,7 +36,8 @@ define(["require", "exports"], function (require, exports) {
     (function (Const) {
         var Config;
         (function (Config) {
-            Config.Dev = true;
+            Config.SkipTapToStart = true;
+            Config.DebugBackgrounds = false;
         })(Config = Const.Config || (Const.Config = {}));
         var States;
         (function (States) {
@@ -65,6 +66,12 @@ define(["require", "exports"], function (require, exports) {
             Images.MainMenuBackground = { name: "main-menu-bg", file: "backgrounds/main-menu.jpg" };
             Images.Joystick = { name: "joystick", file: "joystick/joystick_white.png" };
             Images.ColorExplosion = { name: "color-explosion", file: "color-explosion.png" };
+            Images.Button = { name: "button", file: "button.png" };
+            Images.ButtonPressed = { name: "button-pressed", file: "button-pressed.png" };
+            Images.StarIcon = { name: "star", file: "star.png" };
+            Images.SnowflakeIcon = { name: "snowflake", file: "snowflake.png" };
+            Images.JumpIcon = { name: "jump", file: "jump-icon.png" };
+            Images.FlyIcon = { name: "fly", file: "fly-icon.png" };
         })(Images = Const.Images || (Const.Images = {}));
         var Color;
         (function (Color) {
