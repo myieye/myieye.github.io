@@ -36,9 +36,7 @@ a:hover, a:focus {
 	text-decoration: none;
 	--color: #222;
 }
-ul, ol {
-	list-style: none;
-}
+
 .clearfix:after {
 	visibility: hidden;
 	display: block;
@@ -113,6 +111,7 @@ hr {
 }
 .section-title {
 	margin-bottom: 50px;
+	text-align: center;
 }
 .section-title p {
 	font-size: 18px;
@@ -204,16 +203,16 @@ header .intro-text {
 	line-height: 22px;
 }
 /* Services Section */
-#services {
+.services {
 	padding: 120px 0;
 }
-#services h4 {
+.services h4 {
 	color: #111;
 	text-transform: uppercase;
 	font-size: 25pt;
 	margin-bottom: 30px;
 }
-#services i.fa {
+.services i.fa {
 	font-size: 38px;
 	margin-bottom: 20px;
 	transition: all 0.5s;
@@ -442,6 +441,10 @@ a:focus, .btn:focus, .btn:active:focus, .btn.active:focus, .btn.focus, .btn:acti
 	color: #fff;
 }
 
+#footer .links {
+	font-size: 12px;
+}
+
 @media (max-width: 1024px) {
 	#about img {
 		float: left;
@@ -483,11 +486,11 @@ a:focus, .btn:focus, .btn:active:focus, .btn.active:focus, .btn.focus, .btn:acti
 	display: block;
 }
 
-#services h2 {
+.services h2 {
 	color: rgb(146,208,80);
 }
 
-#services hr {
+.services hr {
 	background: rgb(146,208,80);
 }
 
