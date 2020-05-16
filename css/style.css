@@ -174,7 +174,7 @@ hr {
 	font-size: 24px;
   font-weight: 500;
 }
-.intro span {
+.intro .intro-text span {
 	color: rgba(255,255,255,0.5);
 	font-size: 28px;
 	font-weight: 300;
@@ -669,4 +669,28 @@ h1.name {
 	.get-in-touch-button {
 		width: 130px;
 	}
+}
+
+/* Unsplash */
+.unsplash-link {
+    background-color: black;
+    color: white;
+    text-decoration: none;
+    padding: 4px 6px;
+    font-family: -apple-system, BlinkMacSystemFont, 'San Francisco', 'Helvetica Neue', Helvetica, Ubuntu, Roboto, Noto, 'Segoe UI', Arial, sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 1.2;
+    display: inline-block;
+    border-radius: 3px;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+}
+
+.unsplash-link-content {
+    display: inline-block;
+    padding: 2px 3px;
+    font-size: 12px;
 }
