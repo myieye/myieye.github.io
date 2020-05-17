@@ -54,12 +54,16 @@ export namespace Const {
         export const MainMenuBackground: Image = { name: "main-menu-bg", file: "backgrounds/main-menu.jpg" };
         export const Joystick: Image = { name: "joystick", file: "joystick/joystick_white.png" };
         export const ColorExplosion: Image = { name: "color-explosion", file: "color-explosion.png" };
-        export const Button: Image = { name: "button", file: "button.png" };
-        export const ButtonPressed: Image = { name: "button-pressed", file: "button-pressed.png" };
-        export const StarIcon: Image = { name: "star", file: "star.png" };
-        export const SnowflakeIcon: Image = { name: "snowflake", file: "snowflake.png" };
-        export const JumpIcon: Image = { name: "jump", file: "jump-icon.png" };
-        export const FlyIcon: Image = { name: "fly", file: "fly-icon.png" };
+        export const ButtonFly: Image = { name: "button-fly", file: "buttons/button-fly.png" };
+        export const ButtonFly_Pressed: Image = { name: "button-fly-pressed", file: "buttons/button-fly-pressed.png" };
+        export const ButtonFreeze: Image = { name: "button-freeze", file: "buttons/button-freeze.png" };
+        export const ButtonFreeze_Pressed: Image = { name: "button-freeze-pressed", file: "buttons/button-freeze-pressed.png" };
+        export const ButtonRainbow: Image = { name: "button-rainbow", file: "buttons/button-rainbow.png" };
+        export const ButtonRainbow_Pressed: Image = { name: "button-rainbow-pressed", file: "buttons/button-rainbow-pressed.png" };
+        export const StarIcon: Image = { name: "star", file: "buttons/star-icon.png" };
+        export const SnowflakeIcon: Image = { name: "snowflake", file: "buttons/snowflake-icon.png" };
+        export const JumpIcon: Image = { name: "jump", file: "buttons/jump-icon.png" };
+        export const FlyIcon: Image = { name: "fly", file: "buttons/fly-icon.png" };
     }
 
     export namespace Color {
@@ -81,7 +85,7 @@ export namespace Const {
 
     export namespace Platform {
         export const StartPlatforms = [
-            null, null, null//, Color.StartColors[6]//, null, 
+            null, null, null, null, null//, Color.StartColors[6]//, null, 
         ];//.concat(...Color.StartColors).concat(...Color.FutureColors);
 
         export namespace Size {
@@ -117,7 +121,7 @@ export namespace Const {
             export const Height = 65;
             export const Width = 100;
         }
-        export const StartX = 0;//Platform.StartX;// + Platform.Size.Width / 2;
+        export const StartX =  Platform.Size.Width * 1.5;
         export const StartVerticalPadding = Size.Height * .2;
     }
 
@@ -142,6 +146,12 @@ export namespace Const {
         export const Sounds: EffectConfig[] = [
             { effect: Effect.PlatformSuccess, file: "platform_success" }
         ]
+    }
+
+    export namespace PowerButton {
+        export namespace GroupSize {
+            export const MaxSize = 120;
+        }
     }
 
     export namespace Phase {

@@ -1,33 +1,55 @@
-import { Group, Game, Sprite } from 'phaser-ce';
+import { Group, Game, Sprite, BitmapData } from 'phaser-ce';
 import { Const } from '../helpers/const';
 
 export default class Button extends Group {
 
-    private bg: Sprite;
+    private button: Sprite;
     private image: Sprite;
+    private rainbow: Sprite;
 
-    constructor(game: Game, x: number, y: number, color: number, image: string) {
+    private up: string;
+    private down: string;
+
+    private constructor(game: Game, x: number, y: number, up: string, down: string, icon: string) {
         super(game);
 
+        this.up = up;
+        this.down = down;
+
         this.inputEnableChildren = true;
-        this.bg = this.add(game.add.sprite(x, y, Const.Images.Button.name));
-        this.bg.tint = color;
-
-        this.image = this.add(game.add.sprite(x, y, image));
-        this.image.tint = 0x333333;
-
+        this.button = this.add(game.add.sprite(x, y, up));
+        this.image = this.add(game.add.sprite(x, y, icon));
         game.scale.scaleSprite(this as any, 60, 60, true);
-        
-        game.scale.scaleSprite(this.image, this.bg.width * .5, this.bg.height * .5, true);
-        this.image.alignIn(this.bg, Phaser.CENTER);
 
-        this.onChildInputOver.add(() => {
-            this.bg.loadTexture(Const.Images.ButtonPressed.name);
-            this.bg.alpha = .8;
+        this.onChildInputDown.add(() => {
+            this.button.loadTexture(this.down);
+        });
+        this.onChildInputUp.add(() => {
+            this.button.loadTexture(this.up);
         });
         this.onChildInputOut.add(() => {
-            this.bg.loadTexture(Const.Images.Button.name);
-            this.bg.alpha = 1;
+            this.button.loadTexture(this.up);
         });
+        
+        game.scale.scaleSprite(this.image, this.button.width * .5, this.button.height * .5, true);
+        this.image.alignIn(this.button, Phaser.CENTER);
+    }
+
+    static Fly(game: Game, x:number, y:number) {
+        let button = new Button(game, x, y, Const.Images.ButtonFly.name, Const.Images.ButtonFly_Pressed.name, Const.Images.FlyIcon.name);
+        button.image.tint = 0x222222;
+        return button;
+    }
+
+    static Freeze(game: Game, x:number, y:number) {
+        let button = new Button(game, x, y, Const.Images.ButtonFreeze.name, Const.Images.ButtonFreeze_Pressed.name, Const.Images.SnowflakeIcon.name);
+        button.image.tint = 0xE4E4E4;
+        return button;
+    }
+
+    static Rainbow(game: Game, x:number, y:number) {
+        let button = new Button(game, x, y, Const.Images.ButtonRainbow.name, Const.Images.ButtonRainbow_Pressed.name, Const.Images.StarIcon.name);
+        button.image.tint = 0x222222;
+        return button;
     }
 }

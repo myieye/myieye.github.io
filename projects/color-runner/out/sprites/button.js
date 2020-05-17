@@ -16,26 +16,42 @@ define(["require", "exports", "phaser-ce", "../helpers/const"], function (requir
     Object.defineProperty(exports, "__esModule", { value: true });
     var Button = /** @class */ (function (_super) {
         __extends(Button, _super);
-        function Button(game, x, y, color, image) {
+        function Button(game, x, y, up, down, icon) {
             var _this = _super.call(this, game) || this;
+            _this.up = up;
+            _this.down = down;
             _this.inputEnableChildren = true;
-            _this.bg = _this.add(game.add.sprite(x, y, const_1.Const.Images.Button.name));
-            _this.bg.tint = color;
-            _this.image = _this.add(game.add.sprite(x, y, image));
-            _this.image.tint = 0x333333;
+            _this.button = _this.add(game.add.sprite(x, y, up));
+            _this.image = _this.add(game.add.sprite(x, y, icon));
             game.scale.scaleSprite(_this, 60, 60, true);
-            game.scale.scaleSprite(_this.image, _this.bg.width * .5, _this.bg.height * .5, true);
-            _this.image.alignIn(_this.bg, Phaser.CENTER);
-            _this.onChildInputOver.add(function () {
-                _this.bg.loadTexture(const_1.Const.Images.ButtonPressed.name);
-                _this.bg.alpha = .8;
+            _this.onChildInputDown.add(function () {
+                _this.button.loadTexture(_this.down);
+            });
+            _this.onChildInputUp.add(function () {
+                _this.button.loadTexture(_this.up);
             });
             _this.onChildInputOut.add(function () {
-                _this.bg.loadTexture(const_1.Const.Images.Button.name);
-                _this.bg.alpha = 1;
+                _this.button.loadTexture(_this.up);
             });
+            game.scale.scaleSprite(_this.image, _this.button.width * .5, _this.button.height * .5, true);
+            _this.image.alignIn(_this.button, Phaser.CENTER);
             return _this;
         }
+        Button.Fly = function (game, x, y) {
+            var button = new Button(game, x, y, const_1.Const.Images.ButtonFly.name, const_1.Const.Images.ButtonFly_Pressed.name, const_1.Const.Images.FlyIcon.name);
+            button.image.tint = 0x222222;
+            return button;
+        };
+        Button.Freeze = function (game, x, y) {
+            var button = new Button(game, x, y, const_1.Const.Images.ButtonFreeze.name, const_1.Const.Images.ButtonFreeze_Pressed.name, const_1.Const.Images.SnowflakeIcon.name);
+            button.image.tint = 0xE4E4E4;
+            return button;
+        };
+        Button.Rainbow = function (game, x, y) {
+            var button = new Button(game, x, y, const_1.Const.Images.ButtonRainbow.name, const_1.Const.Images.ButtonRainbow_Pressed.name, const_1.Const.Images.StarIcon.name);
+            button.image.tint = 0x222222;
+            return button;
+        };
         return Button;
     }(phaser_ce_1.Group));
     exports.default = Button;

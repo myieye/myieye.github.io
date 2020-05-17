@@ -24,10 +24,12 @@ define(["require", "exports", "phaser-ce", "../helpers/math-helper", "../helpers
             _this.wheel = _this.add(game.add.group());
             // BORDER
             var border = _this.border = _this.wheel.add(game.add.graphics());
-            border.lineStyle(10, const_1.Const.Joystick.DefaultBorderColor);
+            border.lineStyle(8, const_1.Const.Joystick.DefaultBorderColor);
             border.arc(0, 0, const_1.Const.Joystick.Diameter / 2, -0.5, phaser_ce_1.Math.PI2, false);
+            border.alpha = 0.8;
             // COLOR PIE ----------------------------------------------
             _this.colorPie = _this.wheel.add(game.add.graphics());
+            _this.colorPie.alpha = 0.8;
             // PIN ---------------------------------
             var pin = _this.pin = _this.add(game.add.sprite(0, 0, const_1.Const.Images.Joystick.name));
             pin.anchor.set(0.5, 0.5);
@@ -65,7 +67,7 @@ define(["require", "exports", "phaser-ce", "../helpers/math-helper", "../helpers
                 this.colorPie.beginFill(colors[i]);
                 var startAngle = phaser_ce_1.Math.PI2 - (i * sliceAngleRads);
                 var endAngle = startAngle - sliceAngleRads;
-                startAngle += colors.length < 3 ? 0.09 : 0.06; // Necessarry, because counterclockwise?
+                startAngle += colors.length < 3 ? 0.09 : 0.055; // Necessarry, because counterclockwise?
                 //  True draws anticlockwise
                 this.colorPie.arc(0, 0, const_1.Const.Joystick.Diameter / 2, startAngle, endAngle, true);
                 this.colorPie.endFill();

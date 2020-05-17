@@ -66,12 +66,16 @@ define(["require", "exports"], function (require, exports) {
             Images.MainMenuBackground = { name: "main-menu-bg", file: "backgrounds/main-menu.jpg" };
             Images.Joystick = { name: "joystick", file: "joystick/joystick_white.png" };
             Images.ColorExplosion = { name: "color-explosion", file: "color-explosion.png" };
-            Images.Button = { name: "button", file: "button.png" };
-            Images.ButtonPressed = { name: "button-pressed", file: "button-pressed.png" };
-            Images.StarIcon = { name: "star", file: "star.png" };
-            Images.SnowflakeIcon = { name: "snowflake", file: "snowflake.png" };
-            Images.JumpIcon = { name: "jump", file: "jump-icon.png" };
-            Images.FlyIcon = { name: "fly", file: "fly-icon.png" };
+            Images.ButtonFly = { name: "button-fly", file: "buttons/button-fly.png" };
+            Images.ButtonFly_Pressed = { name: "button-fly-pressed", file: "buttons/button-fly-pressed.png" };
+            Images.ButtonFreeze = { name: "button-freeze", file: "buttons/button-freeze.png" };
+            Images.ButtonFreeze_Pressed = { name: "button-freeze-pressed", file: "buttons/button-freeze-pressed.png" };
+            Images.ButtonRainbow = { name: "button-rainbow", file: "buttons/button-rainbow.png" };
+            Images.ButtonRainbow_Pressed = { name: "button-rainbow-pressed", file: "buttons/button-rainbow-pressed.png" };
+            Images.StarIcon = { name: "star", file: "buttons/star-icon.png" };
+            Images.SnowflakeIcon = { name: "snowflake", file: "buttons/snowflake-icon.png" };
+            Images.JumpIcon = { name: "jump", file: "buttons/jump-icon.png" };
+            Images.FlyIcon = { name: "fly", file: "buttons/fly-icon.png" };
         })(Images = Const.Images || (Const.Images = {}));
         var Color;
         (function (Color) {
@@ -93,7 +97,7 @@ define(["require", "exports"], function (require, exports) {
         var Platform;
         (function (Platform) {
             Platform.StartPlatforms = [
-                null, null, null //, Color.StartColors[6]//, null, 
+                null, null, null, null, null //, Color.StartColors[6]//, null, 
             ]; //.concat(...Color.StartColors).concat(...Color.FutureColors);
             var Size;
             (function (Size) {
@@ -128,7 +132,7 @@ define(["require", "exports"], function (require, exports) {
                 Size.Height = 65;
                 Size.Width = 100;
             })(Size = Player.Size || (Player.Size = {}));
-            Player.StartX = 0; //Platform.StartX;// + Platform.Size.Width / 2;
+            Player.StartX = Platform.Size.Width * 1.5;
             Player.StartVerticalPadding = Size.Height * .2;
         })(Player = Const.Player || (Const.Player = {}));
         var Path;
@@ -154,6 +158,13 @@ define(["require", "exports"], function (require, exports) {
                 { effect: Effect.PlatformSuccess, file: "platform_success" }
             ];
         })(Audio = Const.Audio || (Const.Audio = {}));
+        var PowerButton;
+        (function (PowerButton) {
+            var GroupSize;
+            (function (GroupSize) {
+                GroupSize.MaxSize = 120;
+            })(GroupSize = PowerButton.GroupSize || (PowerButton.GroupSize = {}));
+        })(PowerButton = Const.PowerButton || (Const.PowerButton = {}));
         var Phase;
         (function (Phase) {
             var Helpers = /** @class */ (function () {

@@ -1,0 +1,8 @@
+var myBitmap: Phaser.BitmapData = this.game.add.bitmapData(60, 60);
+var gra = myBitmap.context.createRadialGradient(30, 30, 10, 30, 30, 30);
+gra.addColorStop(0, "#F700FEAA");
+gra.addColorStop(.25, "#08ff56AA");
+gra.addColorStop(.5, "#08ff56AA");
+gra.addColorStop(1 , "#A800F5AA");
+myBitmap.circle(30, 30, 30, gra);
+this.add(this.game.add.sprite(400, 400, myBitmap));

@@ -27,11 +27,13 @@ export default class ColorJoystick extends Group {
 
         // BORDER
         var border = this.border = this.wheel.add(game.add.graphics());
-        border.lineStyle(10, Const.Joystick.DefaultBorderColor);
+        border.lineStyle(8, Const.Joystick.DefaultBorderColor);
         border.arc(0, 0, Const.Joystick.Diameter / 2, -0.5, PMath.PI2, false);
+        border.alpha = 0.8;
 
         // COLOR PIE ----------------------------------------------
         this.colorPie = this.wheel.add(game.add.graphics());
+        this.colorPie.alpha = 0.8;
 
         // PIN ---------------------------------
         var pin = this.pin = this.add(game.add.sprite(0, 0, Const.Images.Joystick.name));
@@ -69,7 +71,7 @@ export default class ColorJoystick extends Group {
             var startAngle = PMath.PI2 - (i * sliceAngleRads);
             var endAngle = startAngle - sliceAngleRads;
 
-            startAngle += colors.length < 3 ? 0.09 : 0.06; // Necessarry, because counterclockwise?
+            startAngle += colors.length < 3 ? 0.09 : 0.055; // Necessarry, because counterclockwise?
 
             //  True draws anticlockwise
             this.colorPie.arc(0, 0, Const.Joystick.Diameter / 2, startAngle, endAngle, true);

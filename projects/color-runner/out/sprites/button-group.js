@@ -18,11 +18,19 @@ define(["require", "exports", "phaser-ce", "./button", "../helpers/const"], func
         __extends(ButtonGroup, _super);
         function ButtonGroup(game) {
             var _this = _super.call(this, game) || this;
-            _this.add(game.add.existing(new button_1.default(game, 600, 400, const_1.Const.Color.StartColors[2], const_1.Const.Images.FlyIcon.name)));
-            _this.add(game.add.existing(new button_1.default(game, 800, 800, const_1.Const.Color.StartColors[1], const_1.Const.Images.SnowflakeIcon.name)));
-            _this.add(game.add.existing(new button_1.default(game, 400, 800, const_1.Const.Color.StartColors[0], const_1.Const.Images.StarIcon.name)));
+            //this.alpha = 0.9;
+            _this.add(game.add.existing(button_1.default.Fly(game, 200, 0)));
+            _this.add(game.add.existing(button_1.default.Freeze(game, 400, 400)));
+            _this.add(game.add.existing(button_1.default.Rainbow(game, 0, 400)));
             return _this;
         }
+        ButtonGroup.prototype.update = function () {
+            var maxHeight = Math.min(this.game.height / 5, const_1.Const.PowerButton.GroupSize.MaxSize);
+            var maxWidth = Math.min(this.game.width / 5, const_1.Const.PowerButton.GroupSize.MaxSize);
+            this.game.scale.scaleSprite(this, maxWidth, maxHeight);
+            var padding = Math.min(this.game.height / 12, 25);
+            this.alignIn(this.game.camera.bounds, Phaser.BOTTOM_LEFT, -padding, -padding);
+        };
         return ButtonGroup;
     }(phaser_ce_1.Group));
     exports.default = ButtonGroup;
